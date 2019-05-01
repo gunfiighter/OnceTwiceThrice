@@ -36,16 +36,15 @@ namespace OnceTwiceThrice
 		public Animation CurrentAnimation;
 		private double animationStep = 0.05;
 
-		public ImageModel(MyForm form, GameMap map, string ImageFile, int X, int Y)
+		public ImageModel(GameMap map, string ImageFile, int X, int Y)
 		{
-			this.form = form;
+			this.form = map.form;
 			this.map = map;
 			Image = Image.FromFile("../../" + ImageFile);
 			this.X = X;
 			this.Y = Y;
 			CurrentAnimation = new Animation();
 		}
-
 		public void MakeMove(Keys key)
 		{
 			if (CurrentAnimation.IsMoving)
@@ -75,11 +74,12 @@ namespace OnceTwiceThrice
 				X = (int)Math.Round(X + xf, 0);
 				Y = (int)Math.Round(Y + yf, 0);
 				xf = yf = 0;
-				if (!form.CurrentKeyMap[CurrentAnimation.Direction] || !map.IsInsideMap(X, Y, CurrentAnimation.Direction))
+				if (!form.CurrentKeyMap[CurrentAnimation.Direction] || 
+				    !map.IsInsideMap(X, Y, CurrentAnimation.Direction))
 					CurrentAnimation.IsMoving = false;
 
 				var nextDirection = form.CurrentKeyMap.GetAnyOnDirection();
-				if (nextDirection != Keys.None)
+				if (nextDirection != Keys.None && this == form.CurrentHero)
 					MakeMove(nextDirection);
 			}
 		}

@@ -11,20 +11,46 @@ namespace OnceTwiceThrice
 	public class MyForm : Form
 	{
 		public KeyMap CurrentKeyMap;
+		public const int DrawingScope = 80;
+		public ImageModel CurrentHero;
 
 		public MyForm()
 		{
 			DoubleBuffered = true;
 			CurrentKeyMap = new KeyMap();
-			var map = new GameMap(5, 5);
-
-
-			var image = new ImageModel(this, map, "images/rocket.png", 0, 0);
+			var map = new GameMap(this, LavelsList.Levels[0]);
+			Width = map.Width * DrawingScope + 50;
+			Height = map.Height * DrawingScope + 50;
+			
+			var heroEnumerator = map.Heroes.GetEnumerator();
+			CurrentHero = Helpful.GetNextHero(heroEnumerator);
+			
 			KeyDown += (sender, args) =>
 			{
 				var keyCode = args.KeyCode;
-				CurrentKeyMap.TurnOn(keyCode);
-				image.MakeMove(keyCode);
+				if (Helpful.KeyIsMove(keyCode))
+				{
+					CurrentKeyMap.TurnOn(keyCode);
+					CurrentHero.MakeMove(keyCode);
+				}
+				else
+				{
+					switch (keyCode)
+					{
+						case Keys.Tab:
+							if (heroEnumerator.MoveNext())
+							{
+								CurrentHero = heroEnumerator.Current;
+								break;
+							}
+
+							heroEnumerator = map.Heroes.GetEnumerator();
+							heroEnumerator.MoveNext();
+							CurrentHero = heroEnumerator.Current;
+							break;
+					}
+				}
+
 				Invalidate();
 			};
 
@@ -33,21 +59,32 @@ namespace OnceTwiceThrice
 				CurrentKeyMap.TurnOff(args.KeyCode);
 			};
 
-
-			var times = 0;
-
 			Paint += (sender, args) =>
 			{
 				var g = args.Graphics;
-				times++;
-				g.DrawImage(image.Image, new Point((int)((image.X + image.xf) * 50), (int)((image.Y + image.yf) * 50)));
+				map.DrawBackground(g);
+				
+				//Обводка
+				g.DrawRectangle(new Pen(Color.Gold, 3), 
+					CurrentHero.X * DrawingScope, 
+					CurrentHero.Y * DrawingScope, 
+					DrawingScope, 
+					DrawingScope);
+				
+				foreach (var hero in map.Heroes)
+				{
+					g.DrawImage(hero.Image,
+						new Point((int) ((hero.X + hero.xf) * DrawingScope),
+							(int) ((hero.Y + hero.yf) * DrawingScope)));
+				}
 			};
 
 			var timer = new Timer();
 			timer.Interval = 10;
 			timer.Tick += (sender, args) =>
 			{
-				image.MakeAnimation();
+				foreach (var hero in map.Heroes)
+					hero.MakeAnimation();
 				Invalidate();
 			};
 			timer.Start();

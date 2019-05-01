@@ -47,8 +47,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameMap.cs" />
+    <Compile Include="Helpful.cs" />
     <Compile Include="ImageModel.cs" />
     <Compile Include="KeyMap.cs" />
+    <Compile Include="Lavels.cs" />
     <Compile Include="MyForm.cs">
       <SubType>Form</SubType>
     </Compile>
