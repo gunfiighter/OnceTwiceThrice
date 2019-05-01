@@ -21,7 +21,30 @@ namespace OnceTwiceThrice
 
 	public class ImageModel
 	{
-		public Image Image;
+		public Image Image {
+			get
+			{
+				switch (lastDirection)
+				{
+					case Keys.Up: return goUp[0];
+					case Keys.Down: return goDown[0];
+					case Keys.Right: return goRight[0];
+					case Keys.Left: return goLeft[0];
+				}
+
+				return goDown[0];
+			}
+		}
+
+		private Keys lastDirection;
+		
+		private List<Image> goUp;
+		private List<Image> goDown;
+		private List<Image> goRight;
+		private List<Image> goLeft;
+		
+	
+
 		public GameMap map;
 
 		public int X;
@@ -40,13 +63,25 @@ namespace OnceTwiceThrice
 		{
 			this.form = map.form;
 			this.map = map;
-			Image = Image.FromFile("../../" + ImageFile);
+			
+			goUp = new List<Image>();
+			goDown = new List<Image>();
+			goRight = new List<Image>();
+			goLeft = new List<Image>();
+			
+			goUp.Add(Image.FromFile("../../images/" + ImageFile + "Up.png"));
+			goDown.Add(Image.FromFile("../../images/" + ImageFile + "Down.png"));
+			goRight.Add(Image.FromFile("../../images/" + ImageFile + "Right.png"));
+			goLeft.Add(Image.FromFile("../../images/" + ImageFile + "Left.png"));
+			lastDirection = Keys.Down;
+			
 			this.X = X;
 			this.Y = Y;
 			CurrentAnimation = new Animation();
 		}
 		public void MakeMove(Keys key)
 		{
+			lastDirection = key;
 			if (CurrentAnimation.IsMoving)
 				return;
 			xf = yf = 0;

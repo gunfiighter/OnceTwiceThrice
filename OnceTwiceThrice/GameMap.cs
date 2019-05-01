@@ -47,7 +47,7 @@ namespace OnceTwiceThrice
 //			item.Add('F', () => new FireItem());
 
 			hero = new Dictionary<char, Func<GameMap, int, int, ImageModel>>();
-			hero.Add('R', (map, x, y) => new ImageModel(map, "images/RedWizard.png", x, y));
+			hero.Add('R', (map, x, y) => new ImageModel(map, "RedWizard", x, y));
 		}
 	} 
 	
