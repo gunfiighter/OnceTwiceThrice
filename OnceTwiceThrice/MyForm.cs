@@ -12,7 +12,7 @@ namespace OnceTwiceThrice
 	{
 		public KeyMap CurrentKeyMap;
 		public const int DrawingScope = 80;
-		public ImageModel CurrentHero;
+		public MovableBase CurrentHero;
 
 		public MyForm()
 		{
@@ -62,7 +62,11 @@ namespace OnceTwiceThrice
 			Paint += (sender, args) =>
 			{
 				var g = args.Graphics;
+				//Отрисовка фона
 				map.DrawBackground(g);
+				
+				//Отрисовка предметов
+				map.DrawItems(g);
 				
 				//Обводка
 				g.DrawRectangle(new Pen(Color.Gold, 3), 
@@ -71,6 +75,7 @@ namespace OnceTwiceThrice
 					DrawingScope, 
 					DrawingScope);
 				
+				//Отрисовка героев
 				foreach (var hero in map.Heroes)
 				{
 					g.DrawImage(hero.Image,

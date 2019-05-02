@@ -48,7 +48,9 @@
   <ItemGroup>
     <Compile Include="GameMap.cs" />
     <Compile Include="Helpful.cs" />
-    <Compile Include="ImageModel.cs" />
+    <Compile Include="Heroes.cs" />
+    <Compile Include="MovableBase.cs" />
+    <Compile Include="Items.cs" />
     <Compile Include="KeyMap.cs" />
     <Compile Include="Lavels.cs" />
     <Compile Include="MyForm.cs">

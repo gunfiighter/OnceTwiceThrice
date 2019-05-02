@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace OnceTwiceThrice
 {
@@ -29,8 +30,8 @@ namespace OnceTwiceThrice
 	public static class MapDecoder
 	{
 		public static Dictionary<char, Background> background;
-//		public static Dictionary<char, Func<IItem>> item;
-		public static Dictionary<char, Func<GameMap, int, int, ImageModel>> hero;
+		public static Dictionary<char, Func<IItems>> item;
+		public static Dictionary<char, Func<GameMap, int, int, MovableBase>> hero;
 
 		static MapDecoder()
 		{
@@ -41,13 +42,13 @@ namespace OnceTwiceThrice
 //			background.Add('L', Background.Lava);
 //			background.Add('I', Background.Ice);
 			
-//			item = new Dictionary<char, Func<IItem>>();
-//			item.Add('S', () => new StoneItem());
+			item = new Dictionary<char, Func<IItems>>();
+			item.Add('S', () => new StoneItem());
 //			item.Add('T', () => new TreeItem());
 //			item.Add('F', () => new FireItem());
 
-			hero = new Dictionary<char, Func<GameMap, int, int, ImageModel>>();
-			hero.Add('R', (map, x, y) => new ImageModel(map, "images/RedWizard.png", x, y));
+			hero = new Dictionary<char, Func<GameMap, int, int, MovableBase>>();
+			hero.Add('R', (map, x, y) => new RedWizard(map, "RedWizard", x, y));
 		}
 	} 
 	
@@ -58,29 +59,44 @@ namespace OnceTwiceThrice
 		public readonly int Height;
 		
 		public Background[,] BackMap;
-		public List<ImageModel> Heroes;
+		public IItems[,] ItemsMap;
+		public List<MovableBase> Heroes;
 		
 		public GameMap(MyForm form, Lavel lavel)
 		{
 			this.form = form;
 			Width = lavel.Background[0].Length;
-			Height = lavel.Background.GetLength(0);
+			Height = lavel.Background.Count;
 			BackMap = new Background[Width, Height];
-			Heroes = new List<ImageModel>();
+			ItemsMap = new IItems[Width, Height];
+			Heroes = new List<MovableBase>();
 			
-			for (var i = 0; i < Width; i++)
-			for (var j = 0; j < Height; j++)
-				BackMap[i, j] = MapDecoder.background[lavel.Background[j][i]];
+			//Заполнение фона
+			BackMap.Foreach((x, y) => { BackMap[x, y] = MapDecoder.background[lavel.Background[y][x]]; });
 			
-			for (var i = 0; i < Width; i++)
-			for (var j = 0; j < Height; j++)
+			//Заполнение объектами
+			Action<char, int, int> AddItem = (c, x, y) => { ItemsMap[x, y] = MapDecoder.item[c](); };
+			
+			lavel.Items.Foreach((x, y) =>
 			{
-				var hero = lavel.Mobs[j][i];
+				var item = lavel.Items[y][x];
+				switch (item)
+				{
+					case 'S': AddItem(item, x, y); break;
+				}
+			});
+			
+			//Заполнение мобами
+			Action<char, int, int> AddHero = (c, x, y) => { Heroes.Add(MapDecoder.hero[c](this, x, y)); };
+			
+			lavel.Mobs.Foreach((x, y) =>
+			{
+				var hero = lavel.Mobs[y][x];
 				switch (hero)
 				{
-					case 'R': Heroes.Add(MapDecoder.hero[hero](this, i, j)); break;
+					case 'R': AddHero(hero, x, y); break;
 				}
-			}
+			});
 
 			if (Heroes.Count == 0)
 				throw new Exception("No heroes on the map"); 
@@ -113,12 +129,35 @@ namespace OnceTwiceThrice
 
 		public void DrawBackground(Graphics g)
 		{
-			for (int i = 0; i < Width; i++)
-			for (int j = 0; j < Height; j++)
+			BackMap.Foreach((x, y) =>
+			{
 				g.DrawImage(
-					BackgroundImages.Images[(int)BackMap[i, j]], 
-					i * MyForm.DrawingScope, 
-					j * MyForm.DrawingScope);
+					BackgroundImages.Images[(int)BackMap[x, y]], 
+					x * MyForm.DrawingScope, 
+					y * MyForm.DrawingScope);
+			});
+		}
+
+		public void DrawItems(Graphics g)
+		{
+			ItemsMap.Foreach((x, y) =>
+			{
+				if (ItemsMap[x, y] != null)
+					g.DrawImage(
+						ItemsMap[x, y].Picture,
+						x * MyForm.DrawingScope,
+						y * MyForm.DrawingScope);
+			});
+		}
+	}
+
+	public static class TwoDimensionalExtension
+	{
+		public static void Foreach<T>(this T[,] array, Action<int, int> act)
+		{
+			for (var i = 0; i < array.GetLength(0); i++)
+			for (var j = 0; j < array.GetLength(1); j++)
+				act(i, j);
 		}
 	}
 }
