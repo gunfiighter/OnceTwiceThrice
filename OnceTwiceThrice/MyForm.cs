@@ -10,80 +10,79 @@ namespace OnceTwiceThrice
 {
 	public class MyForm : Form
 	{
-		public KeyMap CurrentKeyMap;
 		public const int DrawingScope = 80;
-		public ImageModel CurrentHero;
 
 		public MyForm()
 		{
 			DoubleBuffered = true;
-			CurrentKeyMap = new KeyMap();
-			var map = new GameMap(this, LavelsList.Levels[0]);
-			Width = map.Width * DrawingScope + 50;
-			Height = map.Height * DrawingScope + 50;
-			
-			var heroEnumerator = map.Heroes.GetEnumerator();
-			CurrentHero = Helpful.GetNextHero(heroEnumerator);
+			var model = new GameModel(LavelsList.Levels[0]);
+			Width = model.Width * DrawingScope + 50;
+			Height = model.Height * DrawingScope + 50;
+			var KeyMap = model.KeyMap;
 			
 			KeyDown += (sender, args) =>
 			{
 				var keyCode = args.KeyCode;
 				if (Helpful.KeyIsMove(keyCode))
 				{
-					CurrentKeyMap.TurnOn(keyCode);
-					CurrentHero.MakeMove(keyCode);
+					KeyMap.TurnOn(keyCode);
+					if (!model.CurrentHero.CurrentAnimation.IsMoving)
+						model.CurrentHero.MakeMove(keyCode);
 				}
 				else
 				{
 					switch (keyCode)
 					{
 						case Keys.Tab:
-							if (heroEnumerator.MoveNext())
-							{
-								CurrentHero = heroEnumerator.Current;
-								break;
-							}
-
-							heroEnumerator = map.Heroes.GetEnumerator();
-							heroEnumerator.MoveNext();
-							CurrentHero = heroEnumerator.Current;
+							model.SwitchHero();
 							break;
 					}
 				}
-
-				Invalidate();
 			};
 
 			KeyUp += (sender, args) =>
 			{
-				CurrentKeyMap.TurnOff(args.KeyCode);
+				KeyMap.TurnOff(args.KeyCode);
 			};
+
+			Func<MovableBase, int> GetPaintX = (mob) =>
+				(int) Math.Round((mob.X + mob.xf) * DrawingScope);
+			Func<MovableBase, int> GetPaintY = (mob) =>
+				(int) Math.Round((mob.Y + mob.yf) * DrawingScope);
 
 			Paint += (sender, args) =>
 			{
 				var g = args.Graphics;
-				map.DrawBackground(g);
+				//Отрисовка фона
+				model.DrawBackground(g);
 				
-				//Обводка
+				//Отрисовка предметов
+				model.DrawItems(g);
+				
+				//Обводка героя
 				g.DrawRectangle(new Pen(Color.Gold, 3), 
-					CurrentHero.X * DrawingScope, 
-					CurrentHero.Y * DrawingScope, 
+					GetPaintX(model.CurrentHero), 
+					GetPaintY(model.CurrentHero), 
 					DrawingScope, 
 					DrawingScope);
 				
-				foreach (var hero in map.Heroes)
+				//Отрисовка героев
+				foreach (var hero in model.Heroes)
 				{
 					g.DrawImage(hero.Image,
-						new Point((int) ((hero.X + hero.xf) * DrawingScope),
-							(int) ((hero.Y + hero.yf) * DrawingScope)));
+						new Point(GetPaintX(hero), GetPaintY(hero)));
 				}
 			};
 
 			var timer = new Timer();
 			timer.Interval = 10;
+			
+//			KeyMap.TurnOn(Keys.Right);
+//			model.CurrentHero.MakeMove(Keys.Right);
+			
 			timer.Tick += (sender, args) =>
 			{
-				foreach (var hero in map.Heroes)
+				foreach (var hero in model.Heroes)
 					hero.MakeAnimation();
 				Invalidate();
 			};

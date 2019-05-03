@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace OnceTwiceThrice
 {
 	public static class Helpful
 	{
-		public static ImageModel GetNextHero(IEnumerator<ImageModel> enumerator)
+		public static MovableBase GetNextHero(IEnumerator<MovableBase> enumerator)
 		{
 			if (enumerator.MoveNext())
 				return enumerator.Current;
@@ -21,6 +22,11 @@ namespace OnceTwiceThrice
 				key == Keys.Left ||
 				key == Keys.Right;
 
+		}
+
+		public static Image GetImageByName(string name)
+		{
+			return Image.FromFile("../../images/" + name + ".png");
 		}
 	}
 }

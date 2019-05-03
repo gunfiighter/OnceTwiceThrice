@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -31,7 +32,7 @@ namespace OnceTwiceThrice
 	{
 		public static Dictionary<char, Background> background;
 		public static Dictionary<char, Func<IItems>> item;
-		public static Dictionary<char, Func<GameMap, int, int, MovableBase>> hero;
+		public static Dictionary<char, Func<GameModel, int, int, MovableBase>> hero;
 
 		static MapDecoder()
 		{
@@ -47,14 +48,17 @@ namespace OnceTwiceThrice
 //			item.Add('T', () => new TreeItem());
 //			item.Add('F', () => new FireItem());
 
-			hero = new Dictionary<char, Func<GameMap, int, int, MovableBase>>();
+			hero = new Dictionary<char, Func<GameModel, int, int, MovableBase>>();
 			hero.Add('R', (map, x, y) => new RedWizard(map, "RedWizard", x, y));
 		}
 	} 
 	
-	public class GameMap
+	public class GameModel
 	{
-		public MyForm form;
+		public KeyMap KeyMap;
+		
+		public MovableBase CurrentHero;
+		private IEnumerator<MovableBase> heroEnumerator;
 		public readonly int Width;
 		public readonly int Height;
 		
@@ -62,11 +66,13 @@ namespace OnceTwiceThrice
 		public IItems[,] ItemsMap;
 		public List<MovableBase> Heroes;
 		
-		public GameMap(MyForm form, Lavel lavel)
+		public GameModel(Lavel lavel)
 		{
-			this.form = form;
 			Width = lavel.Background[0].Length;
 			Height = lavel.Background.Count;
+			
+			KeyMap = new KeyMap();
+			
 			BackMap = new Background[Width, Height];
 			ItemsMap = new IItems[Width, Height];
 			Heroes = new List<MovableBase>();
@@ -99,7 +105,10 @@ namespace OnceTwiceThrice
 			});
 
 			if (Heroes.Count == 0)
-				throw new Exception("No heroes on the map"); 
+				throw new Exception("No heroes on the model");
+
+			heroEnumerator = Heroes.GetEnumerator();
+			SwitchHero();
 		}
 
 		public bool IsInsideMap(int x, int y)
@@ -148,6 +157,18 @@ namespace OnceTwiceThrice
 						x * MyForm.DrawingScope,
 						y * MyForm.DrawingScope);
 			});
+		}
+
+		public void SwitchHero()
+		{
+			if (!heroEnumerator.MoveNext())
+			{
+				heroEnumerator = Heroes.GetEnumerator();
+				if (heroEnumerator.MoveNext())
+					throw new Exception("No heroes in the model");
+			}
+
+			CurrentHero = heroEnumerator.Current;
 		}
 	}
 
