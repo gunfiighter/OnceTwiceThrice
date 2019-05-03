@@ -29,22 +29,22 @@ namespace OnceTwiceThrice
 			Levels.Add(new Lavel( 
 				new StringMap
 				{
-					"GBBGBB",
-					"GBGGGB",
-					"GGGBGB",
-					"GBBBGG"
+					"GBBGBBGBBGBB",
+					"GBGGGBGBBGBB",
+					"GGGBGBGBBGBB",
+					"GBBBGGGBBGBB"
 				}, new StringMap
 				{
-					"......",
-					"....S.",
-					"......",
-					"......"
+					"............",
+					"....S.......",
+					"............",
+					"............"
 				}, new StringMap
 				{
-					"......",
-					".R....",
-					"......",
-					"....R."
+					"............",
+					".R..........",
+					"............",
+					"....R......."
 				}
 				));
 		}

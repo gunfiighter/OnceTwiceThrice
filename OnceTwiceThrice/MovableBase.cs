@@ -46,7 +46,7 @@ namespace OnceTwiceThrice
 		
 	
 
-		public GameMap map;
+		public GameModel Model;
 
 		public int X;
 		public int Y;
@@ -55,15 +55,17 @@ namespace OnceTwiceThrice
 		public double yf;
 
 		public bool flag;
-		private MyForm form;
 
 		public Animation CurrentAnimation;
-		private double animationStep = 0.05;
 
-		public MovableBase(GameMap map, string ImageFile, int X, int Y)
+		public virtual double Speed
 		{
-			this.form = map.form;
-			this.map = map;
+			get { return 0.05; }
+		}
+
+		public MovableBase(GameModel model, string ImageFile, int X, int Y)
+		{
+			this.Model = model;
 			
 			goUp = new List<Image>();
 			goDown = new List<Image>();
@@ -87,10 +89,17 @@ namespace OnceTwiceThrice
 			lastDirection = key;
 			if (CurrentAnimation.IsMoving)
 				return;
-			xf = yf = 0;
 
-			if (map.IsInsideMap(X, Y, key))
+			if (Model.IsInsideMap(X, Y, key))
 			{
+				xf = yf = 0;
+				switch (key)
+				{
+					case Keys.Up: Y--; yf = 1; break;
+					case Keys.Down: Y++; yf = -1; break;
+					case Keys.Left: X--; xf = 1; break;
+					case Keys.Right: X++; xf = -1; break;
+				}
 				CurrentAnimation.IsMoving = true;
 				CurrentAnimation.Direction = key;
 			}
@@ -102,22 +111,27 @@ namespace OnceTwiceThrice
 				return;
 			switch (CurrentAnimation.Direction)
 			{
-				case Keys.Up: yf += -animationStep; break;
-				case Keys.Down: yf += animationStep; break;
-				case Keys.Left: xf += -animationStep; break;
-				case Keys.Right: xf += animationStep; break;
+				case Keys.Up: yf += -Speed; break;
+				case Keys.Down: yf += Speed; break;
+				case Keys.Left: xf += -Speed; break;
+				case Keys.Right: xf += Speed; break;
 			}
-			if (Math.Abs(xf) - 1 > -0.0001 || Math.Abs(yf) - 1 > -0.0001)
+			if (Math.Abs(xf) < 0.01 && Math.Abs(yf) < 0.01)
 			{
-				X = (int)Math.Round(X + xf, 0);
-				Y = (int)Math.Round(Y + yf, 0);
+//				X = (int)Math.Round(X + xf, 0);
+//				Y = (int)Math.Round(Y + yf, 0);
 				xf = yf = 0;
-				if (!form.CurrentKeyMap[CurrentAnimation.Direction] || 
-				    !map.IsInsideMap(X, Y, CurrentAnimation.Direction))
-					CurrentAnimation.IsMoving = false;
+				CurrentAnimation.IsMoving = false;
+				if (Model.KeyMap[CurrentAnimation.Direction] &&
+				    Model.IsInsideMap(X, Y, CurrentAnimation.Direction) &&
+				    this == Model.CurrentHero)
+				{
+					MakeMove(CurrentAnimation.Direction);
+					return;
+				}
 
-				var nextDirection = form.CurrentKeyMap.GetAnyOnDirection();
-				if (nextDirection != Keys.None && this == form.CurrentHero)
+				var nextDirection = Model.KeyMap.GetAnyOnDirection();
+				if (nextDirection != Keys.None)
 					MakeMove(nextDirection);
 			}
 		}

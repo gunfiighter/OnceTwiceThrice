@@ -2,7 +2,7 @@ namespace OnceTwiceThrice
 {
 	public class RedWizard : MovableBase
 	{
-		public RedWizard(GameMap map, string ImageFile, int X, int Y): base(map, ImageFile, X, Y)
+		public RedWizard(GameModel model, string ImageFile, int X, int Y): base(model, ImageFile, X, Y)
 		{
 			;
 		}
