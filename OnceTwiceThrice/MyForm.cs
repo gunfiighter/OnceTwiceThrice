@@ -18,7 +18,7 @@ namespace OnceTwiceThrice
 			var model = new GameModel(LavelsList.Levels[0]);
 			Width = model.Width * DrawingScope + 50;
 			Height = model.Height * DrawingScope + 50;
-			var KeyMap = model.KeyMap;
+			var KeyMap = model.CurrentHero.KeyMap;
 			
 			KeyDown += (sender, args) =>
 			{
@@ -33,7 +33,9 @@ namespace OnceTwiceThrice
 					switch (keyCode)
 					{
 						case Keys.Tab:
+							KeyMap.TurnOff();
 							model.SwitchHero();
+							KeyMap = model.CurrentHero.KeyMap;
 							break;
 					}
 				}
@@ -44,9 +46,9 @@ namespace OnceTwiceThrice
 				KeyMap.TurnOff(args.KeyCode);
 			};
 
-			Func<MovableBase, int> GetPaintX = (mob) =>
+			Func<IMovable, int> GetPaintX = (mob) =>
 				(int) Math.Round((mob.X + mob.DX) * DrawingScope);
-			Func<MovableBase, int> GetPaintY = (mob) =>
+			Func<IMovable, int> GetPaintY = (mob) =>
 				(int) Math.Round((mob.Y + mob.DY) * DrawingScope);
 
 			Paint += (sender, args) =>
@@ -71,6 +73,13 @@ namespace OnceTwiceThrice
 					g.DrawImage(hero.Image,
 						new Point(GetPaintX(hero), GetPaintY(hero)));
 				}
+				
+				//Отрисовка мобов
+				foreach (var mob in model.Mobs)
+				{
+					g.DrawImage(mob.Image,
+						new Point(GetPaintX(mob), GetPaintY(mob)));
+				}
 			};
 
 			var timer = new Timer();
@@ -83,6 +92,8 @@ namespace OnceTwiceThrice
 			{
 				foreach (var hero in model.Heroes)
 					hero.MakeAnimation();
+				foreach (var mob in model.Mobs)
+					mob.MakeAnimation();
 				Invalidate();
 			};
 			timer.Start();

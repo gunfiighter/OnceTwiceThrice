@@ -54,6 +54,11 @@ namespace OnceTwiceThrice
 		{
 			this[key] = false;
 		}
+		
+		public void TurnOff()
+		{
+			Up = Down = Right = Left = false;
+		}
 
 		public Keys GetAnyOnDirection()
 		{

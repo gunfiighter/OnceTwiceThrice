@@ -50,6 +50,7 @@
     <Compile Include="GameModel.cs" />
     <Compile Include="Helpful.cs" />
     <Compile Include="Heroes.cs" />
+    <Compile Include="Mobs.cs" />
     <Compile Include="MovableBase.cs" />
     <Compile Include="Items.cs" />
     <Compile Include="KeyMap.cs" />

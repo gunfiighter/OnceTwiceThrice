@@ -38,28 +38,26 @@ namespace OnceTwiceThrice
 			hero = new Dictionary<char, Func<GameModel, int, int, MovableBase>>();
 			hero.Add('M', (map, x, y) => new MatthiusHero(map, x, y));
 			hero.Add('S', (map, x, y) => new SkimletHero(map, x, y));
+			hero.Add('R', (map, x, y) => new RighterMob(map, x, y));
 		}
 	} 
 	
 	public class GameModel
 	{
-		public KeyMap KeyMap;
-		
-		public MovableBase CurrentHero;
-		private IEnumerator<MovableBase> heroEnumerator;
+		public IHero CurrentHero;
+		private IEnumerator<IHero> heroEnumerator;
 		public readonly int Width;
 		public readonly int Height;
 		
 		public IBackground[,] BackMap;
 		public Stack<IItems>[,] ItemsMap;
-		public List<MovableBase> Heroes;
+		public List<IHero> Heroes;
+		public List<IMob> Mobs;
 		
 		public GameModel(Lavel lavel)
 		{
 			Width = lavel.Background[0].Length;
 			Height = lavel.Background.Count;
-			
-			KeyMap = new KeyMap();
 			
 			BackMap = new IBackground[Width, Height];
 			ItemsMap = new Stack<IItems>[Width, Height];
@@ -67,7 +65,8 @@ namespace OnceTwiceThrice
 			{
 				ItemsMap[x, y] = new Stack<IItems>();
 			});
-			Heroes = new List<MovableBase>();
+			Heroes = new List<IHero>();
+			Mobs = new List<IMob>();
 			
 			//Заполнение фона
 			BackMap.Foreach((x, y) => { BackMap[x, y] = MapDecoder.background[lavel.Background[y][x]]; });
@@ -83,9 +82,15 @@ namespace OnceTwiceThrice
 			//Заполнение мобами
 			lavel.Mobs.Foreach((x, y) =>
 			{
-				var hero = lavel.Mobs[y][x];
-				if (MapDecoder.hero.ContainsKey(hero))
-					Heroes.Add(MapDecoder.hero[hero](this, x, y));
+				var mobChar = lavel.Mobs[y][x];
+				if (MapDecoder.hero.ContainsKey(mobChar))
+				{
+					var mob = MapDecoder.hero[mobChar](this, x, y);
+					if (mob is IHero)
+						Heroes.Add((IHero)mob);
+					if (mob is IMob)
+						Mobs.Add((IMob)mob);
+				}
 			});
 
 			if (Heroes.Count == 0)

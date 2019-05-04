@@ -21,7 +21,19 @@ namespace OnceTwiceThrice
 		}
 	}
 
-	public class MovableBase
+	public interface IMovable
+	{
+		Image Image { get; }
+		KeyMap KeyMap { get; set; }
+		void MakeMove(Keys key);
+		void MakeAnimation();
+		int X { get; }
+		int Y { get; }
+		double DX { get; }
+		double DY { get; }
+	}
+
+	public class MovableBase : IMovable
 	{
 		public Image Image {
 			get
@@ -49,11 +61,16 @@ namespace OnceTwiceThrice
 
 		public GameModel Model;
 
-		public int X;
-		public int Y;
+		public event Action OnStop; //Вызывается при завершени анимации шага
+		public event Action<Keys> OnCantMove; //Вызывается при невозможности двигаться в заданном направлении
+		
+		public KeyMap KeyMap { get; set; }
 
-		public double DX;
-		public double DY;
+		public int X { get; private set; }
+		public int Y { get; private set; }
+
+		public double DX { get; private set; }
+		public double DY { get; private set; }
 
 		public Animation CurrentAnimation;
 
@@ -65,21 +82,36 @@ namespace OnceTwiceThrice
 		public MovableBase(GameModel model, string ImageFile, int X, int Y)
 		{
 			this.Model = model;
+			KeyMap = new KeyMap();
 			
 			goUp = new List<Image>();
 			goDown = new List<Image>();
 			goRight = new List<Image>();
 			goLeft = new List<Image>();
 			
-			goUp.Add(Image.FromFile("../../images/" + ImageFile + "Up.png"));
-			goDown.Add(Image.FromFile("../../images/" + ImageFile + "Down.png"));
-			goRight.Add(Image.FromFile("../../images/" + ImageFile + "Right.png"));
-			goLeft.Add(Image.FromFile("../../images/" + ImageFile + "Left.png"));
+			goUp.Add(Helpful.GetImageByName(ImageFile + "Up"));
+			goDown.Add(Helpful.GetImageByName(ImageFile + "Down"));
+			goRight.Add(Helpful.GetImageByName(ImageFile + "Right"));
+			goLeft.Add(Helpful.GetImageByName(ImageFile + "Left"));
 			lastDirection = Keys.Down;
 			
 			this.X = X;
 			this.Y = Y;
 			CurrentAnimation = new Animation();
+
+			OnStop += () =>
+			{
+				if (KeyMap[CurrentAnimation.Direction] &&
+				    Model.IsInsideMap(X, Y, CurrentAnimation.Direction))
+				{
+					MakeMove(CurrentAnimation.Direction);
+					return;
+				}
+
+				var nextDirection = KeyMap.GetAnyOnDirection();
+				if (nextDirection != Keys.None)
+					MakeMove(nextDirection);
+			};
 		}
 		public void MakeMove(Keys key)
 		{
@@ -91,15 +123,19 @@ namespace OnceTwiceThrice
 			if (AllowToMove(key))
 			{
 				DX = DY = 0;
-				switch (key)
-				{
-					case Keys.Up: Y--; DY = 1; break;
-					case Keys.Down: Y++; DY = -1; break;
-					case Keys.Left: X--; DX = 1; break;
-					case Keys.Right: X++; DX = -1; break;
-				}
+//				switch (key)
+//				{
+//					case Keys.Up: Y--; DY = 1; break;
+//					case Keys.Down: Y++; DY = -1; break;
+//					case Keys.Left: X--; DX = 1; break;
+//					case Keys.Right: X++; DX = -1; break;
+//				}
 				CurrentAnimation.IsMoving = true;
 				CurrentAnimation.Direction = key;
+			}
+			else
+			{
+				if (OnCantMove != null) OnCantMove(key);
 			}
 		}
 
@@ -114,23 +150,17 @@ namespace OnceTwiceThrice
 				case Keys.Left: DX += -Speed; break;
 				case Keys.Right: DX += Speed; break;
 			}
-			if (Math.Abs(DX) < 0.01 && Math.Abs(DY) < 0.01)
+			if (1 - Math.Abs(DX) < 0.01 || 1 - Math.Abs(DY) < 0.01)
 			{
-//				X = (int)Math.Round(X + DX, 0);
-//				Y = (int)Math.Round(Y + DY, 0);
+				if (1 - Math.Abs(DX) < -0.01 || 1 - Math.Abs(DY) < -0.01)
+					throw new Exception("DX или DY > 1");
+				X = (int)Math.Round(X + DX, 0);
+				Y = (int)Math.Round(Y + DY, 0);
 				DX = DY = 0;
 				CurrentAnimation.IsMoving = false;
-				if (Model.KeyMap[CurrentAnimation.Direction] &&
-				    Model.IsInsideMap(X, Y, CurrentAnimation.Direction) &&
-				    this == Model.CurrentHero)
-				{
-					MakeMove(CurrentAnimation.Direction);
-					return;
-				}
-
-				var nextDirection = Model.KeyMap.GetAnyOnDirection();
-				if (nextDirection != Keys.None)
-					MakeMove(nextDirection);
+				if (OnStop != null)
+					OnStop();
+				
 			}
 		}
 
