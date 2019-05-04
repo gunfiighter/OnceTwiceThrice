@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backgrounds.cs" />
     <Compile Include="GameModel.cs" />
     <Compile Include="Helpful.cs" />
     <Compile Include="Heroes.cs" />

@@ -26,8 +26,7 @@ namespace OnceTwiceThrice
 				if (Helpful.KeyIsMove(keyCode))
 				{
 					KeyMap.TurnOn(keyCode);
-					if (!model.CurrentHero.CurrentAnimation.IsMoving)
-						model.CurrentHero.MakeMove(keyCode);
+					model.CurrentHero.MakeMove(keyCode);
 				}
 				else
 				{
@@ -46,9 +45,9 @@ namespace OnceTwiceThrice
 			};
 
 			Func<MovableBase, int> GetPaintX = (mob) =>
-				(int) Math.Round((mob.X + mob.xf) * DrawingScope);
+				(int) Math.Round((mob.X + mob.DX) * DrawingScope);
 			Func<MovableBase, int> GetPaintY = (mob) =>
-				(int) Math.Round((mob.Y + mob.yf) * DrawingScope);
+				(int) Math.Round((mob.Y + mob.DY) * DrawingScope);
 
 			Paint += (sender, args) =>
 			{

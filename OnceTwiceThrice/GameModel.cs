@@ -9,36 +9,23 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace OnceTwiceThrice
-{
-	public enum Background
+{	
+	public static class Grass
 	{
-		Grass,
-		Burned
+		public static string Name = "Grass";
 	}
-
-	public static class BackgroundImages
-	{
-		public static List<Image> Images;
-
-		static BackgroundImages()
-		{
-			Images = new List<Image>();
-			foreach (var item in Enum.GetValues(typeof(Background)))
-				Images.Add(Image.FromFile("../../images/" + item.ToString() + ".png"));
-		}
-	} 
 	
 	public static class MapDecoder
 	{
-		public static Dictionary<char, Background> background;
+		public static Dictionary<char, IBackground> background;
 		public static Dictionary<char, Func<IItems>> item;
 		public static Dictionary<char, Func<GameModel, int, int, MovableBase>> hero;
 
 		static MapDecoder()
 		{
-			background = new Dictionary<char, Background>();
-			background.Add('G', Background.Grass);
-			background.Add('B', Background.Burned);
+			background = new Dictionary<char, IBackground>();
+			background.Add('G', new GrassBackground());
+			background.Add('B', new BurnedBackground());
 //			background.Add('W', Background.Water);
 //			background.Add('L', Background.Lava);
 //			background.Add('I', Background.Ice);
@@ -46,10 +33,11 @@ namespace OnceTwiceThrice
 			item = new Dictionary<char, Func<IItems>>();
 			item.Add('S', () => new StoneItem());
 //			item.Add('T', () => new TreeItem());
-//			item.Add('F', () => new FireItem());
+			item.Add('F', () => new FireItem());
 
 			hero = new Dictionary<char, Func<GameModel, int, int, MovableBase>>();
-			hero.Add('R', (map, x, y) => new RedWizard(map, "RedWizard", x, y));
+			hero.Add('M', (map, x, y) => new MatthiusHero(map, x, y));
+			hero.Add('S', (map, x, y) => new SkimletHero(map, x, y));
 		}
 	} 
 	
@@ -62,8 +50,8 @@ namespace OnceTwiceThrice
 		public readonly int Width;
 		public readonly int Height;
 		
-		public Background[,] BackMap;
-		public IItems[,] ItemsMap;
+		public IBackground[,] BackMap;
+		public Stack<IItems>[,] ItemsMap;
 		public List<MovableBase> Heroes;
 		
 		public GameModel(Lavel lavel)
@@ -73,35 +61,31 @@ namespace OnceTwiceThrice
 			
 			KeyMap = new KeyMap();
 			
-			BackMap = new Background[Width, Height];
-			ItemsMap = new IItems[Width, Height];
+			BackMap = new IBackground[Width, Height];
+			ItemsMap = new Stack<IItems>[Width, Height];
+			ItemsMap.Foreach((x, y) =>
+			{
+				ItemsMap[x, y] = new Stack<IItems>();
+			});
 			Heroes = new List<MovableBase>();
 			
 			//Заполнение фона
 			BackMap.Foreach((x, y) => { BackMap[x, y] = MapDecoder.background[lavel.Background[y][x]]; });
 			
 			//Заполнение объектами
-			Action<char, int, int> AddItem = (c, x, y) => { ItemsMap[x, y] = MapDecoder.item[c](); };
-			
 			lavel.Items.Foreach((x, y) =>
 			{
 				var item = lavel.Items[y][x];
-				switch (item)
-				{
-					case 'S': AddItem(item, x, y); break;
-				}
+				if (MapDecoder.item.ContainsKey(item))
+					ItemsMap[x, y].Push(MapDecoder.item[item]());
 			});
 			
 			//Заполнение мобами
-			Action<char, int, int> AddHero = (c, x, y) => { Heroes.Add(MapDecoder.hero[c](this, x, y)); };
-			
 			lavel.Mobs.Foreach((x, y) =>
 			{
 				var hero = lavel.Mobs[y][x];
-				switch (hero)
-				{
-					case 'R': AddHero(hero, x, y); break;
-				}
+				if (MapDecoder.hero.ContainsKey(hero))
+					Heroes.Add(MapDecoder.hero[hero](this, x, y));
 			});
 
 			if (Heroes.Count == 0)
@@ -120,18 +104,10 @@ namespace OnceTwiceThrice
 
 		public bool IsInsideMap(int x, int y, Keys key)
 		{
-			var dx = 0;
-			var dy = 0;
-			switch (key)
-			{
-				case Keys.Up: dy = -1; break;
-				case Keys.Down: dy = 1; break;
-				case Keys.Left: dx = -1; break;
-				case Keys.Right: dx = 1; break;
-				default: throw new ArgumentException();
-			}
-			var newX = x + dx;
-			var newY = y + dy;
+			int newX = 0;
+			int newY = 0;
+			Helpful.XYPlusKeys(x, y, key, ref newX, ref newY);
+			
 			return
 				IsInsideMap(newX, newY);
 		}
@@ -141,7 +117,7 @@ namespace OnceTwiceThrice
 			BackMap.Foreach((x, y) =>
 			{
 				g.DrawImage(
-					BackgroundImages.Images[(int)BackMap[x, y]], 
+					BackMap[x, y].Picture, 
 					x * MyForm.DrawingScope, 
 					y * MyForm.DrawingScope);
 			});
@@ -151,11 +127,13 @@ namespace OnceTwiceThrice
 		{
 			ItemsMap.Foreach((x, y) =>
 			{
-				if (ItemsMap[x, y] != null)
+				foreach (var item in ItemsMap[x, y])
+				{
 					g.DrawImage(
-						ItemsMap[x, y].Picture,
-						x * MyForm.DrawingScope,
-						y * MyForm.DrawingScope);
+                        item.Picture,
+                        x * MyForm.DrawingScope,
+                        y * MyForm.DrawingScope);
+				}
 			});
 		}
 
@@ -164,7 +142,7 @@ namespace OnceTwiceThrice
 			if (!heroEnumerator.MoveNext())
 			{
 				heroEnumerator = Heroes.GetEnumerator();
-				if (heroEnumerator.MoveNext())
+				if (!heroEnumerator.MoveNext())
 					throw new Exception("No heroes in the model");
 			}
 
