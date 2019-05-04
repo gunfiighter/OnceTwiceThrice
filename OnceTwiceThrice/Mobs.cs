@@ -13,7 +13,20 @@ namespace OnceTwiceThrice
 		public MobBase(GameModel model, string ImageFile, int X, int Y) : base(model, ImageFile, X, Y)
 		{
 			;
+			OnMoveStart += MoveStart;
 		}
+
+		public virtual void MoveStart()
+		{
+			foreach (var hero in Model.Heroes)
+			{
+				if ((hero.MX == MX && hero.MY == MY) || (hero.X == MX && hero.Y == MY))
+				{
+					hero.Destroy();
+				}
+			}
+		}
+		
 		
 		public override double Speed
 		{

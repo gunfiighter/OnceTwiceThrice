@@ -44,4 +44,22 @@ namespace OnceTwiceThrice
 		public void TurnOn() => Enable = true;
 		public void TurnOff() => Enable = false;
 	}
+	
+	public class DestinationItem : IItems
+	{
+		public Image Picture { get; }
+		public bool Enable { get; private set; }
+
+		public DestinationItem()
+		{
+			Picture = Helpful.GetImageByName("Destination_4");
+			Enable = true;
+		}
+
+		public bool CanStep(MovableBase mob) => true;
+		public bool CanStop(MovableBase mob) => true;
+
+		public void TurnOn() => Enable = true;
+		public void TurnOff() => Enable = false;
+	}
 }

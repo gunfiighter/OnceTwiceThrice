@@ -27,8 +27,11 @@ namespace OnceTwiceThrice
 		KeyMap KeyMap { get; set; }
 		void MakeMove(Keys key);
 		void MakeAnimation();
+		void Destroy();
 		int X { get; }
 		int Y { get; }
+		int MX { get; }
+		int MY { get; }
 		double DX { get; }
 		double DY { get; }
 	}
@@ -63,11 +66,16 @@ namespace OnceTwiceThrice
 
 		public event Action OnStop; //Вызывается при завершени анимации шага
 		public event Action<Keys> OnCantMove; //Вызывается при невозможности двигаться в заданном направлении
+		public event Action OnDestroy; //Вызывается при уничтожении объекта
+		public event Action OnMoveStart;
 		
 		public KeyMap KeyMap { get; set; }
 
 		public int X { get; private set; }
 		public int Y { get; private set; }
+		
+		public int MX { get; private set; }
+		public int MY { get; private set; }
 
 		public double DX { get; private set; }
 		public double DY { get; private set; }
@@ -97,6 +105,8 @@ namespace OnceTwiceThrice
 			
 			this.X = X;
 			this.Y = Y;
+			MX = X;
+			MY = Y;
 			CurrentAnimation = new Animation();
 
 			OnStop += () =>
@@ -119,23 +129,26 @@ namespace OnceTwiceThrice
 			if (CurrentAnimation.IsMoving)
 				return;
 
-			//if (Model.IsInsideMap(X, Y, key))
 			if (AllowToMove(key))
 			{
 				DX = DY = 0;
-//				switch (key)
-//				{
-//					case Keys.Up: Y--; DY = 1; break;
-//					case Keys.Down: Y++; DY = -1; break;
-//					case Keys.Left: X--; DX = 1; break;
-//					case Keys.Right: X++; DX = -1; break;
-//				}
+				var newMoveToX = X;
+				var newMoveToY = Y;
+				Helpful.XYPlusKeys(X, Y, key, ref newMoveToX, ref newMoveToY);
+
+				MX = newMoveToX;
+				MY = newMoveToY;
+				
 				CurrentAnimation.IsMoving = true;
 				CurrentAnimation.Direction = key;
+
+				if (OnMoveStart != null)
+					OnMoveStart();
 			}
 			else
 			{
-				if (OnCantMove != null) OnCantMove(key);
+				if (OnCantMove != null)
+					OnCantMove(key);
 			}
 		}
 
@@ -143,25 +156,32 @@ namespace OnceTwiceThrice
 		{
 			if (!CurrentAnimation.IsMoving)
 				return;
-			switch (CurrentAnimation.Direction)
-			{
-				case Keys.Up: DY += -Speed; break;
-				case Keys.Down: DY += Speed; break;
-				case Keys.Left: DX += -Speed; break;
-				case Keys.Right: DX += Speed; break;
-			}
+			int newX = 0;
+			int newY = 0;
+			Helpful.XYPlusKeys(0, 0, CurrentAnimation.Direction, ref newX, ref newY);
+			DX += newX * Speed;
+			DY += newY * Speed;
+			
 			if (1 - Math.Abs(DX) < 0.01 || 1 - Math.Abs(DY) < 0.01)
 			{
 				if (1 - Math.Abs(DX) < -0.01 || 1 - Math.Abs(DY) < -0.01)
 					throw new Exception("DX или DY > 1");
 				X = (int)Math.Round(X + DX, 0);
 				Y = (int)Math.Round(Y + DY, 0);
+				MX = X;
+				MY = Y;
 				DX = DY = 0;
 				CurrentAnimation.IsMoving = false;
 				if (OnStop != null)
 					OnStop();
 				
 			}
+		}
+
+		public void Destroy()
+		{
+			if (OnDestroy != null)
+				OnDestroy();
 		}
 
 		//public virtual bool IsHero() => false;

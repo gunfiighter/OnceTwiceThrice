@@ -34,6 +34,7 @@ namespace OnceTwiceThrice
 			item.Add('S', () => new StoneItem());
 //			item.Add('T', () => new TreeItem());
 			item.Add('F', () => new FireItem());
+			item.Add('D', () => new DestinationItem());
 
 			hero = new Dictionary<char, Func<GameModel, int, int, MovableBase>>();
 			hero.Add('M', (map, x, y) => new MatthiusHero(map, x, y));
@@ -53,6 +54,35 @@ namespace OnceTwiceThrice
 		public Stack<IItems>[,] ItemsMap;
 		public List<IHero> Heroes;
 		public List<IMob> Mobs;
+
+		public event Action OnWin;
+		public event Action OnGameOver;
+
+		public void GameOver(object sender)
+		{
+			if (sender is IHero)
+			{
+				var heroSender = sender as IHero;
+				foreach (var hero in Heroes)
+					if (hero == heroSender)
+					{
+						OnGameOver();
+						return;
+					}
+			}
+		}
+
+		public void Win()
+		{
+			foreach (var hero in Heroes)
+			{
+				var itemsStack = ItemsMap[hero.X, hero.Y];
+				if (itemsStack.Count == 0 || !(itemsStack.Peek() is DestinationItem))
+					return;
+			}
+
+			OnWin();
+		}
 		
 		public GameModel(Lavel lavel)
 		{
@@ -87,9 +117,9 @@ namespace OnceTwiceThrice
 				{
 					var mob = MapDecoder.hero[mobChar](this, x, y);
 					if (mob is IHero)
-						Heroes.Add((IHero)mob);
+						Heroes.Add(mob as IHero);
 					if (mob is IMob)
-						Mobs.Add((IMob)mob);
+						Mobs.Add(mob as IMob);
 				}
 			});
 

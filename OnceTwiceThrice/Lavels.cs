@@ -35,10 +35,10 @@ namespace OnceTwiceThrice
 					"GBBBGGGBBGBB"
 				}, new StringMap
 				{
-					"F.....S.....",
-					"....S..F....",
+					"F.....S...D.",
+					"F...S.......",
 					".........F.S",
-					".......S...."
+					".......S..DD"
 				}, new StringMap
 				{
 					"...........R",
