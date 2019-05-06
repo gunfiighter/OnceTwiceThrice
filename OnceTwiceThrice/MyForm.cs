@@ -78,10 +78,11 @@ namespace OnceTwiceThrice
 
 		private void TickInGame(object sender, EventArgs args)
 		{
-			foreach (var hero in model.Heroes)
-				hero.MakeAnimation();
-			foreach (var mob in model.Mobs)
-				mob.MakeAnimation();
+//			foreach (var hero in model.Heroes)
+//				hero.MakeAnimation();
+//			foreach (var mob in model.Mobs)
+//				mob.MakeAnimation();
+			model.Tick();
 			Invalidate();
 		}
 

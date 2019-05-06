@@ -15,31 +15,33 @@ namespace OnceTwiceThrice
 		public static string Name = "Grass";
 	}
 	
-	public static class MapDecoder
+	public class MapDecoder
 	{
-		public static Dictionary<char, IBackground> background;
-		public static Dictionary<char, Func<IItems>> item;
-		public static Dictionary<char, Func<GameModel, int, int, MovableBase>> hero;
+		public Dictionary<char, IBackground> background;
+		public Dictionary<char, Func<int, int, IItems>> item;
+		public Dictionary<char, Func<GameModel, int, int, MovableBase>> hero;
 
-		static MapDecoder()
+		public MapDecoder(GameModel model)
 		{
 			background = new Dictionary<char, IBackground>();
 			background.Add('G', new GrassBackground());
 			background.Add('B', new BurnedBackground());
-//			background.Add('W', Background.Water);
-//			background.Add('L', Background.Lava);
+			background.Add('W', new WaterBackground());
+			background.Add('L', new LavaBackground());
 //			background.Add('I', Background.Ice);
 			
-			item = new Dictionary<char, Func<IItems>>();
-			item.Add('S', () => new StoneItem());
-//			item.Add('T', () => new TreeItem());
-			item.Add('F', () => new FireItem());
-			item.Add('D', () => new DestinationItem());
+			item = new Dictionary<char, Func<int, int, IItems>>();
+			item.Add('S', (x, y) => new StoneItem(x, y));
+//			item.Add('T', (x, y) => new TreeItem(x, y));
+			item.Add('F', (x, y) => new FireItem(x, y));
+			item.Add('D', (x, y) => new DestinationItem(x, y));
+			item.Add('A', (x, y) => new AgaricItem(model, x, y));
 
 			hero = new Dictionary<char, Func<GameModel, int, int, MovableBase>>();
 			hero.Add('M', (map, x, y) => new MatthiusHero(map, x, y));
 			hero.Add('S', (map, x, y) => new SkimletHero(map, x, y));
 			hero.Add('R', (map, x, y) => new RighterMob(map, x, y));
+			hero.Add('P', (map, x, y) => new SporesMob(map, x, y));
 		}
 	} 
 	
@@ -52,24 +54,19 @@ namespace OnceTwiceThrice
 		
 		public IBackground[,] BackMap;
 		public Stack<IItems>[,] ItemsMap;
-		public List<IHero> Heroes;
-		public List<IMob> Mobs;
+		public LinkedList<IHero> Heroes;
+		public LinkedList<IMob> Mobs;
 
 		public event Action OnWin;
 		public event Action OnGameOver;
+		public event Action OnTick;
+
+		public readonly MapDecoder MapDecoder;
 
 		public void GameOver(object sender)
 		{
-			if (sender is IHero)
-			{
-				var heroSender = sender as IHero;
-				foreach (var hero in Heroes)
-					if (hero == heroSender)
-					{
-						OnGameOver();
-						return;
-					}
-			}
+			if (OnGameOver != null)
+				OnGameOver();
 		}
 
 		public void Win()
@@ -83,6 +80,12 @@ namespace OnceTwiceThrice
 
 			OnWin();
 		}
+
+		public void Tick()
+		{
+			if (OnTick != null)
+				OnTick();
+		}
 		
 		public GameModel(Lavel lavel)
 		{
@@ -95,8 +98,10 @@ namespace OnceTwiceThrice
 			{
 				ItemsMap[x, y] = new Stack<IItems>();
 			});
-			Heroes = new List<IHero>();
-			Mobs = new List<IMob>();
+			Heroes = new LinkedList<IHero>();
+			Mobs = new LinkedList<IMob>();
+			
+			MapDecoder = new MapDecoder(this);
 			
 			//Заполнение фона
 			BackMap.Foreach((x, y) => { BackMap[x, y] = MapDecoder.background[lavel.Background[y][x]]; });
@@ -106,7 +111,7 @@ namespace OnceTwiceThrice
 			{
 				var item = lavel.Items[y][x];
 				if (MapDecoder.item.ContainsKey(item))
-					ItemsMap[x, y].Push(MapDecoder.item[item]());
+					ItemsMap[x, y].Push(MapDecoder.item[item](x, y));
 			});
 			
 			//Заполнение мобами
@@ -117,9 +122,9 @@ namespace OnceTwiceThrice
 				{
 					var mob = MapDecoder.hero[mobChar](this, x, y);
 					if (mob is IHero)
-						Heroes.Add(mob as IHero);
+						Heroes.AddLast(mob as IHero);
 					if (mob is IMob)
-						Mobs.Add(mob as IMob);
+						Mobs.AddLast(mob as IMob);
 				}
 			});
 

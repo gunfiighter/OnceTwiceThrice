@@ -41,15 +41,18 @@ namespace OnceTwiceThrice
 		public Image Image {
 			get
 			{
-				switch (lastDirection)
+				if (!SkinIgnoreDirection)
 				{
-					case Keys.Up: return goUp[0];
-					case Keys.Down: return goDown[0];
-					case Keys.Right: return goRight[0];
-					case Keys.Left: return goLeft[0];
+					switch (lastDirection)
+					{
+						case Keys.Up: return goUp[0];
+						case Keys.Down: return goDown[0];
+						case Keys.Right: return goRight[0];
+						case Keys.Left: return goLeft[0];
+					}
 				}
 
-				return goDown[0];
+			return goDown[0];
 			}
 		}
 
@@ -86,22 +89,32 @@ namespace OnceTwiceThrice
 		{
 			get { return 0.05; }
 		}
+		
+		public virtual bool SkinIgnoreDirection => false;
 
 		public MovableBase(GameModel model, string ImageFile, int X, int Y)
 		{
 			this.Model = model;
 			KeyMap = new KeyMap();
-			
-			goUp = new List<Image>();
+
 			goDown = new List<Image>();
-			goRight = new List<Image>();
-			goLeft = new List<Image>();
-			
-			goUp.Add(Helpful.GetImageByName(ImageFile + "Up"));
-			goDown.Add(Helpful.GetImageByName(ImageFile + "Down"));
-			goRight.Add(Helpful.GetImageByName(ImageFile + "Right"));
-			goLeft.Add(Helpful.GetImageByName(ImageFile + "Left"));
-			lastDirection = Keys.Down;
+			if (!SkinIgnoreDirection)
+			{
+				goUp = new List<Image>();
+				goRight = new List<Image>();
+				goLeft = new List<Image>();
+
+				goUp.Add(Helpful.GetImageByName(ImageFile + "Up"));
+				goDown.Add(Helpful.GetImageByName(ImageFile + "Down"));
+				goRight.Add(Helpful.GetImageByName(ImageFile + "Right"));
+				goLeft.Add(Helpful.GetImageByName(ImageFile + "Left"));
+			}
+			else
+			{
+				goDown.Add(Helpful.GetImageByName(ImageFile));
+			}
+
+		lastDirection = Keys.Down;
 			
 			this.X = X;
 			this.Y = Y;
@@ -121,6 +134,23 @@ namespace OnceTwiceThrice
 				var nextDirection = KeyMap.GetAnyOnDirection();
 				if (nextDirection != Keys.None)
 					MakeMove(nextDirection);
+			};
+
+			model.OnTick += MakeAnimation;
+			OnDestroy += () =>
+			{
+
+				if (this is IMob)
+				{
+					model.OnTick -= MakeAnimation;
+					model.Mobs.Remove(this as IMob);
+				}
+
+				if (this is IHero)
+				{
+					model.OnTick -= MakeAnimation;
+					model.Heroes.Remove(this as IHero);
+				}
 			};
 		}
 		public void MakeMove(Keys key)
