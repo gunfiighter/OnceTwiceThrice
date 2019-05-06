@@ -46,13 +46,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backgrounds.cs" />
+    <Compile Include="Backgrounds\Backgrounds.cs" />
+    <Compile Include="Backgrounds\BurnedBackground.cs" />
+    <Compile Include="Backgrounds\GrassBackground.cs" />
+    <Compile Include="Backgrounds\IBackground.cs" />
+    <Compile Include="Backgrounds\WaterBackground.cs" />
     <Compile Include="GameModel.cs" />
     <Compile Include="Helpful.cs" />
-    <Compile Include="Heroes.cs" />
-    <Compile Include="Mobs.cs" />
+    <Compile Include="Heroes\HeroBase.cs" />
+    <Compile Include="Heroes\SkimletHero.cs" />
+    <Compile Include="Heroes\IHero.cs" />
+    <Compile Include="Heroes\MatthiusHero.cs" />
+    <Compile Include="Items\AgaricItem.cs" />
+    <Compile Include="Items\DestinationItem.cs" />
+    <Compile Include="Items\FireItem.cs" />
+    <Compile Include="Items\IItems.cs" />
+    <Compile Include="Items\ItemBase.cs" />
+    <Compile Include="Items\StoneItem.cs" />
+    <Compile Include="Mobs\IMob.cs" />
+    <Compile Include="Mobs\MobBase.cs" />
+    <Compile Include="Mobs\SporesMob.cs" />
+    <Compile Include="Mobs\RighterMob.cs" />
     <Compile Include="MovableBase.cs" />
-    <Compile Include="Items.cs" />
     <Compile Include="KeyMap.cs" />
     <Compile Include="Lavels.cs" />
     <Compile Include="MyForm.cs">
@@ -82,6 +97,5 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

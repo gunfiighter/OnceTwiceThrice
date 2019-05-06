@@ -164,7 +164,7 @@ namespace OnceTwiceThrice
 				DX = DY = 0;
 				var newMoveToX = X;
 				var newMoveToY = Y;
-				Helpful.XYPlusKeys(X, Y, key, ref newMoveToX, ref newMoveToY);
+				Helpful.XyPlusKeys(X, Y, key, ref newMoveToX, ref newMoveToY);
 
 				MX = newMoveToX;
 				MY = newMoveToY;
@@ -188,7 +188,7 @@ namespace OnceTwiceThrice
 				return;
 			int newX = 0;
 			int newY = 0;
-			Helpful.XYPlusKeys(0, 0, CurrentAnimation.Direction, ref newX, ref newY);
+			Helpful.XyPlusKeys(0, 0, CurrentAnimation.Direction, ref newX, ref newY);
 			DX += newX * Speed;
 			DY += newY * Speed;
 			
@@ -220,7 +220,7 @@ namespace OnceTwiceThrice
 		{
 			int newX = 0;
 			int newY = 0;
-			Helpful.XYPlusKeys(X, Y, key, ref newX, ref newY);
+			Helpful.XyPlusKeys(X, Y, key, ref newX, ref newY);
 			if (!Model.IsInsideMap(newX, newY))
 				return false;
 			if (Model.ItemsMap[newX, newY].Count > 0)

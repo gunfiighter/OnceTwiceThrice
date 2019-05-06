@@ -41,14 +41,13 @@ namespace OnceTwiceThrice
 			hero.Add('M', (map, x, y) => new MatthiusHero(map, x, y));
 			hero.Add('S', (map, x, y) => new SkimletHero(map, x, y));
 			hero.Add('R', (map, x, y) => new RighterMob(map, x, y));
-			hero.Add('P', (map, x, y) => new SporesMob(map, x, y));
 		}
 	} 
 	
 	public class GameModel
 	{
 		public IHero CurrentHero;
-		private IEnumerator<IHero> heroEnumerator;
+		private IEnumerator<IHero> _heroEnumerator;
 		public readonly int Width;
 		public readonly int Height;
 		
@@ -60,8 +59,6 @@ namespace OnceTwiceThrice
 		public event Action OnWin;
 		public event Action OnGameOver;
 		public event Action OnTick;
-
-		public readonly MapDecoder MapDecoder;
 
 		public void GameOver(object sender)
 		{
@@ -78,13 +75,12 @@ namespace OnceTwiceThrice
 					return;
 			}
 
-			OnWin();
+			OnWin?.Invoke();
 		}
 
 		public void Tick()
 		{
-			if (OnTick != null)
-				OnTick();
+			OnTick?.Invoke();
 		}
 		
 		public GameModel(Lavel lavel)
@@ -101,26 +97,26 @@ namespace OnceTwiceThrice
 			Heroes = new LinkedList<IHero>();
 			Mobs = new LinkedList<IMob>();
 			
-			MapDecoder = new MapDecoder(this);
+			var mapDecoder = new MapDecoder(this);
 			
 			//Заполнение фона
-			BackMap.Foreach((x, y) => { BackMap[x, y] = MapDecoder.background[lavel.Background[y][x]]; });
+			BackMap.Foreach((x, y) => { BackMap[x, y] = mapDecoder.background[lavel.Background[y][x]]; });
 			
 			//Заполнение объектами
 			lavel.Items.Foreach((x, y) =>
 			{
 				var item = lavel.Items[y][x];
-				if (MapDecoder.item.ContainsKey(item))
-					ItemsMap[x, y].Push(MapDecoder.item[item](x, y));
+				if (mapDecoder.item.ContainsKey(item))
+					ItemsMap[x, y].Push(mapDecoder.item[item](x, y));
 			});
 			
 			//Заполнение мобами
 			lavel.Mobs.Foreach((x, y) =>
 			{
 				var mobChar = lavel.Mobs[y][x];
-				if (MapDecoder.hero.ContainsKey(mobChar))
+				if (mapDecoder.hero.ContainsKey(mobChar))
 				{
-					var mob = MapDecoder.hero[mobChar](this, x, y);
+					var mob = mapDecoder.hero[mobChar](this, x, y);
 					if (mob is IHero)
 						Heroes.AddLast(mob as IHero);
 					if (mob is IMob)
@@ -131,7 +127,7 @@ namespace OnceTwiceThrice
 			if (Heroes.Count == 0)
 				throw new Exception("No heroes on the model");
 
-			heroEnumerator = Heroes.GetEnumerator();
+			_heroEnumerator = Heroes.GetEnumerator();
 			SwitchHero();
 		}
 
@@ -144,9 +140,9 @@ namespace OnceTwiceThrice
 
 		public bool IsInsideMap(int x, int y, Keys key)
 		{
-			int newX = 0;
-			int newY = 0;
-			Helpful.XYPlusKeys(x, y, key, ref newX, ref newY);
+			var newX = 0;
+			var newY = 0;
+			Helpful.XyPlusKeys(x, y, key, ref newX, ref newY);
 			
 			return
 				IsInsideMap(newX, newY);
@@ -179,14 +175,14 @@ namespace OnceTwiceThrice
 
 		public void SwitchHero()
 		{
-			if (!heroEnumerator.MoveNext())
+			if (!_heroEnumerator.MoveNext())
 			{
-				heroEnumerator = Heroes.GetEnumerator();
-				if (!heroEnumerator.MoveNext())
+				_heroEnumerator = Heroes.GetEnumerator();
+				if (!_heroEnumerator.MoveNext())
 					throw new Exception("No heroes in the model");
 			}
 
-			CurrentHero = heroEnumerator.Current;
+			CurrentHero = _heroEnumerator.Current;
 		}
 	}
 

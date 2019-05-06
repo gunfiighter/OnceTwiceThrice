@@ -132,7 +132,7 @@ namespace OnceTwiceThrice
 		{
 			DoubleBuffered = true;
 			var lavels = new LavelsList();
-			PlayTheGame(lavels.Levels[0]);
+			PlayTheGame(lavels.Levels[1]);
 		}
 	}
 }

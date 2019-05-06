@@ -29,7 +29,7 @@ namespace OnceTwiceThrice
 			return Image.FromFile("../../images/" + name + ".png");
 		}
 
-		public static void XYPlusKeys(int x, int y, Keys key, ref int newX, ref int newY)
+		public static void XyPlusKeys(int x, int y, Keys key, ref int newX, ref int newY)
 		{
 			var dx = 0;
 			var dy = 0;
