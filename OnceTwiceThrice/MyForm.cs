@@ -112,7 +112,7 @@ namespace OnceTwiceThrice
 		{
 			timer = new Timer(){Interval = 10};
 			
-			model = new GameModel(LavelsList.Levels[0]);
+			model = new GameModel(lavel);
 			Width = model.Width * DrawingScope + 50;
 			Height = model.Height * DrawingScope + 50;
 			
@@ -131,7 +131,8 @@ namespace OnceTwiceThrice
 		public MyForm()
 		{
 			DoubleBuffered = true;
-			PlayTheGame(LavelsList.Levels[0]);
+			var lavels = new LavelsList();
+			PlayTheGame(lavels.Levels[0]);
 		}
 	}
 }

@@ -70,7 +70,7 @@ namespace OnceTwiceThrice
 		public event Action OnStop; //Вызывается при завершени анимации шага
 		public event Action<Keys> OnCantMove; //Вызывается при невозможности двигаться в заданном направлении
 		public event Action OnDestroy; //Вызывается при уничтожении объекта
-		public event Action OnMoveStart;
+		public event Action OnMoveStart; //Вызывается когда принято решение двигаться
 		
 		public KeyMap KeyMap { get; set; }
 

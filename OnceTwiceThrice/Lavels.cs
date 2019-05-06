@@ -19,10 +19,10 @@ namespace OnceTwiceThrice
 		}
 	}
 	
-	public static class LavelsList
+	public class LavelsList
 	{
-		public static List<Lavel> Levels;
-		static LavelsList() {
+		public List<Lavel> Levels;
+		public LavelsList() {
 			Levels = new List<Lavel>();
 			
 			//Lavel 0
@@ -36,7 +36,7 @@ namespace OnceTwiceThrice
 				}, new StringMap
 				{
 					"F....AS.....",
-					"F...S.......",
+					"F...S...F...",
 					".........F.S",
 					"......DS...D"
 				}, new StringMap
@@ -46,7 +46,46 @@ namespace OnceTwiceThrice
 					"............",
 					"............"
 				}
-				));
+			));
+			
+			//Level 1
+			Levels.Add(new Lavel( 
+				new StringMap
+				{
+					"BBBBLLGGGGG",
+					"BBBBLLGGGGG",
+					"BBBLLLGGGGG",
+					"GGGGGGGGGGG",
+					"GGGGGGGGGGG",
+					"GGGGGGWWWWW",
+					"BBBBBBWGGGG",
+					"BBBBBBWGGGG",
+					"BBBBBBWGGGG",
+					
+				}, new StringMap
+				{
+					"..DS..SSSSS",
+					".SSS......S",
+					"..........A",
+					"SSS.......S",
+					".....F.....",
+					"...........",
+					"..F........",
+					"........FD.",
+					"S..........",
+				}, new StringMap
+				{
+					"...........",
+					".......R...",
+					"...........",
+					"...........",
+					"...........",
+					"..MS.......",
+					"...........",
+					".....R....R",
+					"...........",
+				}
+			));
 		}
 	}
 
