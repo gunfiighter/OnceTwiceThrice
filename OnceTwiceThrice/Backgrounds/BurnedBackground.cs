@@ -2,9 +2,12 @@ using System.Drawing;
 
 namespace OnceTwiceThrice
 {
-	public class BurnedBackground : IBackground
+	public class BurnedBackground : BackgroundBase, IBackground
 	{
-		public Image Picture { get; } = Useful.GetImageByName("Burned");
+		public BurnedBackground(GameModel model) : base(1, "Burned")
+		{
+			;
+		}
 
 		public bool CanStep(MovableBase mob) => true;
 		public bool CanStop(MovableBase mob) => true;

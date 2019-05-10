@@ -2,13 +2,13 @@ using System.Drawing;
 
 namespace OnceTwiceThrice
 {
-	public class WaterBackground : BackgroundBase, IBackground
+	public class LavaBackground : BackgroundBase, IBackground
 	{
-		public WaterBackground(GameModel model) : base(4, "Water")
+		public LavaBackground (GameModel model) : base( 4, "Lava")
 		{
 			model.OnTick += () =>
 			{
-				if (model.TickCount % 15 == 0)
+				if (model.TickCount % 20 == 0)
 					this.ChangeSlide();
 			};
 		}

@@ -46,7 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backgrounds\Backgrounds.cs" />
+    <Compile Include="Backgrounds\BackgroundBase.cs" />
+    <Compile Include="Backgrounds\LavaBackgrounds.cs" />
     <Compile Include="Backgrounds\BurnedBackground.cs" />
     <Compile Include="Backgrounds\GrassBackground.cs" />
     <Compile Include="Backgrounds\IBackground.cs" />

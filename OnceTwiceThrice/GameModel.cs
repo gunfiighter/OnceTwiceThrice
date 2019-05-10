@@ -24,10 +24,10 @@ namespace OnceTwiceThrice
 		public MapDecoder(GameModel model)
 		{
 			background = new Dictionary<char, IBackground>();
-			background.Add('G', new GrassBackground());
-			background.Add('B', new BurnedBackground());
-			background.Add('W', new WaterBackground());
-			background.Add('L', new LavaBackground());
+			background.Add('G', new GrassBackground(model));
+			background.Add('B', new BurnedBackground(model));
+			background.Add('W', new WaterBackground(model));
+			background.Add('L', new LavaBackground(model));
 //			background.Add('I', Background.Ice);
 			
 			item = new Dictionary<char, Func<int, int, IItems>>();

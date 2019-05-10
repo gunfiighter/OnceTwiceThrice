@@ -2,12 +2,11 @@ using System.Drawing;
 
 namespace OnceTwiceThrice
 {
-	public class GrassBackground : IBackground
+	public class GrassBackground : BackgroundBase, IBackground 
 	{
-		private Image picture = Useful.GetImageByName("Grass");
-		public Image Picture
+		public GrassBackground(GameModel model) : base(1, "Grass")
 		{
-			get { return picture; }
+			;
 		}
 
 		public bool CanStep(MovableBase mob) => true;

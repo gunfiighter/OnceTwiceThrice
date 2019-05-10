@@ -26,7 +26,7 @@ namespace OnceTwiceThrice
 
 		public static Image GetImageByName(string name)
 		{
-			return Image.FromFile("../../images/" + name + ".png"); //Кто читает, тот лох
+			return Image.FromFile("../../images/" + name + ".png");
 		}
 
 		public static void XyPlusKeys(int x, int y, Keys key, ref int newX, ref int newY)
