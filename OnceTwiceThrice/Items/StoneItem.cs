@@ -7,7 +7,7 @@ namespace OnceTwiceThrice
 		public Image Picture { get; }
 		public StoneItem(int x, int y) : base(x, y)
 		{
-			Picture = Helpful.GetImageByName("Stone");
+			Picture = Useful.GetImageByName("Stone");
 		}
 
 		public bool CanStep(MovableBase mob) => false;

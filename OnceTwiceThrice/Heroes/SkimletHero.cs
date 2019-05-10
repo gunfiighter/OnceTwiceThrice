@@ -5,7 +5,7 @@ namespace OnceTwiceThrice
 {
 	public class SkimletHero : HeroBase, IHero
 	{
-		public SkimletHero(GameModel model, int X, int Y): base(model, "Skimlet", X, Y)
+		public SkimletHero(GameModel model, int X, int Y): base(model, "Skimlet/", X, Y)
 		{
 			;
 		}

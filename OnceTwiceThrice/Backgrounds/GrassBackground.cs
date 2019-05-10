@@ -4,7 +4,7 @@ namespace OnceTwiceThrice
 {
 	public class GrassBackground : IBackground
 	{
-		private Image picture = Helpful.GetImageByName("Grass");
+		private Image picture = Useful.GetImageByName("Grass");
 		public Image Picture
 		{
 			get { return picture; }

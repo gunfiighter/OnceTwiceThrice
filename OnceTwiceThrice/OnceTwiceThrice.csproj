@@ -52,7 +52,7 @@
     <Compile Include="Backgrounds\IBackground.cs" />
     <Compile Include="Backgrounds\WaterBackground.cs" />
     <Compile Include="GameModel.cs" />
-    <Compile Include="Helpful.cs" />
+    <Compile Include="Useful.cs" />
     <Compile Include="Heroes\HeroBase.cs" />
     <Compile Include="Heroes\SkimletHero.cs" />
     <Compile Include="Heroes\IHero.cs" />
@@ -65,11 +65,11 @@
     <Compile Include="Items\StoneItem.cs" />
     <Compile Include="Mobs\IMob.cs" />
     <Compile Include="Mobs\MobBase.cs" />
-    <Compile Include="Mobs\SporesMob.cs" />
-    <Compile Include="Mobs\RighterMob.cs" />
+    <Compile Include="Mobs\SporeMob.cs" />
+    <Compile Include="Mobs\RedGolemMob.cs" />
     <Compile Include="MovableBase.cs" />
     <Compile Include="KeyMap.cs" />
-    <Compile Include="Lavels.cs" />
+    <Compile Include="Levels.cs" />
     <Compile Include="MyForm.cs">
       <SubType>Form</SubType>
     </Compile>

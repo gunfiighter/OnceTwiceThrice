@@ -23,6 +23,7 @@ namespace OnceTwiceThrice
 				if ((mob.MX == MX && mob.MY == MY) || (mob.X == MX && mob.Y == MY))
 				{
 					this.Destroy();
+					return;
 				}
 			}
 		}

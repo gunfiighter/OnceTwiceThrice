@@ -7,7 +7,7 @@ namespace OnceTwiceThrice
 		public Image Picture { get; }
 		public DestinationItem(int x, int y) : base(x, y)
 		{
-			Picture = Helpful.GetImageByName("Destination_4");
+			Picture = Useful.GetImageByName("Destination/0");
 		}
 
 		public bool CanStep(MovableBase mob) => true;

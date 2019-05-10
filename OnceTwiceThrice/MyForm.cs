@@ -10,7 +10,7 @@ namespace OnceTwiceThrice
 {
 	public class MyForm : Form
 	{
-		public const int DrawingScope = 80;
+		public const int DrawingScope = 80;//размер клетки в px
 		private GameModel model;
 		
 		private Func<IMovable, int> GetPaintX = (mob) =>
@@ -54,7 +54,7 @@ namespace OnceTwiceThrice
 		private void KeyDownInGame(object sender, KeyEventArgs args)
 		{
 			var keyCode = args.KeyCode;
-			if (Helpful.KeyIsMove(keyCode))
+			if (Useful.KeyIsMove(keyCode))
 			{
 				model.CurrentHero.KeyMap.TurnOn(keyCode);
 				model.CurrentHero.MakeMove(keyCode);
@@ -108,12 +108,12 @@ namespace OnceTwiceThrice
 			timer.Dispose();
 		}
 
-		private void PlayTheGame(Lavel lavel)
+		private void PlayTheGame(Level lavel)
 		{
 			timer = new Timer(){Interval = 10};
 			
 			model = new GameModel(lavel);
-			Width = model.Width * DrawingScope + 50;
+			Width = model.Width * DrawingScope + 10;
 			Height = model.Height * DrawingScope + 50;
 			
 			KeyDown += KeyDownInGame;
@@ -131,8 +131,9 @@ namespace OnceTwiceThrice
 		public MyForm()
 		{
 			DoubleBuffered = true;
-			var lavels = new LavelsList();
-			PlayTheGame(lavels.Levels[1]);
+			var levels = new LevelsList();
+			//PlayTheGame(levels.Levels[0]);
+			PlayTheGame(levels.Levels[1]);
 		}
 	}
 }

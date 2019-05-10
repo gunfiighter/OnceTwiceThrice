@@ -4,7 +4,7 @@ namespace OnceTwiceThrice
 {
 	public class LavaBackground : IBackground
 	{
-		private Image picture = Helpful.GetImageByName("Lava");
+		private Image picture = Useful.GetImageByName("Lava");
 		public Image Picture
 		{
 			get { return picture; }

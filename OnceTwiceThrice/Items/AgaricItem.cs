@@ -11,15 +11,15 @@ namespace OnceTwiceThrice
 		
 		public AgaricItem(GameModel model, int x, int y) : base(x, y)
 		{
-			Picture = Helpful.GetImageByName("Agaric");
+			Picture = Useful.GetImageByName("Agaric/0");
 			Interval = 10;
 			model.OnTick += () =>
 			{
 				Interval++;
-				if (Interval == 100)
+				if (Interval == 150)
 				{
 					Interval = 0;
-					var newMob = new SporesMob(model, x - 1, y);
+					var newMob = new SporeMob(model, x - 1, y);
 					newMob.KeyMap.TurnOn(Keys.Left);
 					newMob.MakeMove(Keys.Left);
 					model.Mobs.AddLast(newMob);

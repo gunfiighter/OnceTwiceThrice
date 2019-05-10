@@ -2,7 +2,7 @@ namespace OnceTwiceThrice
 {
 	public class MatthiusHero : HeroBase, IHero
 	{
-		public MatthiusHero(GameModel model, int X, int Y): base(model, "Matthius", X, Y)
+		public MatthiusHero(GameModel model, int X, int Y): base(model, "Matthius/", X, Y)
 		{
 			;
 		}

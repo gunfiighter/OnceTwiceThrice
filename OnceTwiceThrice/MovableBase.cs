@@ -104,17 +104,17 @@ namespace OnceTwiceThrice
 				goRight = new List<Image>();
 				goLeft = new List<Image>();
 
-				goUp.Add(Helpful.GetImageByName(ImageFile + "Up"));
-				goDown.Add(Helpful.GetImageByName(ImageFile + "Down"));
-				goRight.Add(Helpful.GetImageByName(ImageFile + "Right"));
-				goLeft.Add(Helpful.GetImageByName(ImageFile + "Left"));
+				goUp.Add(Useful.GetImageByName(ImageFile + "Up/0"));
+				goDown.Add(Useful.GetImageByName(ImageFile + "Down/0"));
+				goRight.Add(Useful.GetImageByName(ImageFile + "Right/0"));
+				goLeft.Add(Useful.GetImageByName(ImageFile + "Left/0"));
 			}
 			else
 			{
-				goDown.Add(Helpful.GetImageByName(ImageFile));
+				goDown.Add(Useful.GetImageByName(ImageFile));
 			}
 
-		lastDirection = Keys.Down;
+			lastDirection = Keys.Down;
 			
 			this.X = X;
 			this.Y = Y;
@@ -164,7 +164,7 @@ namespace OnceTwiceThrice
 				DX = DY = 0;
 				var newMoveToX = X;
 				var newMoveToY = Y;
-				Helpful.XyPlusKeys(X, Y, key, ref newMoveToX, ref newMoveToY);
+				Useful.XyPlusKeys(X, Y, key, ref newMoveToX, ref newMoveToY);
 
 				MX = newMoveToX;
 				MY = newMoveToY;
@@ -172,13 +172,11 @@ namespace OnceTwiceThrice
 				CurrentAnimation.IsMoving = true;
 				CurrentAnimation.Direction = key;
 
-				if (OnMoveStart != null)
-					OnMoveStart();
+				OnMoveStart?.Invoke();
 			}
 			else
 			{
-				if (OnCantMove != null)
-					OnCantMove(key);
+				OnCantMove?.Invoke(key);
 			}
 		}
 
@@ -188,7 +186,7 @@ namespace OnceTwiceThrice
 				return;
 			int newX = 0;
 			int newY = 0;
-			Helpful.XyPlusKeys(0, 0, CurrentAnimation.Direction, ref newX, ref newY);
+			Useful.XyPlusKeys(0, 0, CurrentAnimation.Direction, ref newX, ref newY);
 			DX += newX * Speed;
 			DY += newY * Speed;
 			
@@ -202,16 +200,14 @@ namespace OnceTwiceThrice
 				MY = Y;
 				DX = DY = 0;
 				CurrentAnimation.IsMoving = false;
-				if (OnStop != null)
-					OnStop();
-				
+				OnStop?.Invoke();
+
 			}
 		}
 
 		public void Destroy()
 		{
-			if (OnDestroy != null)
-				OnDestroy();
+			OnDestroy?.Invoke();
 		}
 
 		//public virtual bool IsHero() => false;
@@ -220,7 +216,7 @@ namespace OnceTwiceThrice
 		{
 			int newX = 0;
 			int newY = 0;
-			Helpful.XyPlusKeys(X, Y, key, ref newX, ref newY);
+			Useful.XyPlusKeys(X, Y, key, ref newX, ref newY);
 			if (!Model.IsInsideMap(newX, newY))
 				return false;
 			if (Model.ItemsMap[newX, newY].Count > 0)

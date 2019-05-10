@@ -40,14 +40,14 @@ namespace OnceTwiceThrice
 			hero = new Dictionary<char, Func<GameModel, int, int, MovableBase>>();
 			hero.Add('M', (map, x, y) => new MatthiusHero(map, x, y));
 			hero.Add('S', (map, x, y) => new SkimletHero(map, x, y));
-			hero.Add('R', (map, x, y) => new RighterMob(map, x, y));
+			hero.Add('R', (map, x, y) => new RedGolemMob(map, x, y));
 		}
 	} 
 	
 	public class GameModel
 	{
 		public IHero CurrentHero;
-		private IEnumerator<IHero> _heroEnumerator;
+		private IEnumerator<IHero> heroEnumerator;
 		public readonly int Width;
 		public readonly int Height;
 		
@@ -83,7 +83,7 @@ namespace OnceTwiceThrice
 			OnTick?.Invoke();
 		}
 		
-		public GameModel(Lavel lavel)
+		public GameModel(Level lavel)
 		{
 			Width = lavel.Background[0].Length;
 			Height = lavel.Background.Count;
@@ -127,7 +127,7 @@ namespace OnceTwiceThrice
 			if (Heroes.Count == 0)
 				throw new Exception("No heroes on the model");
 
-			_heroEnumerator = Heroes.GetEnumerator();
+			heroEnumerator = Heroes.GetEnumerator();
 			SwitchHero();
 		}
 
@@ -142,7 +142,7 @@ namespace OnceTwiceThrice
 		{
 			var newX = 0;
 			var newY = 0;
-			Helpful.XyPlusKeys(x, y, key, ref newX, ref newY);
+			Useful.XyPlusKeys(x, y, key, ref newX, ref newY);
 			
 			return
 				IsInsideMap(newX, newY);
@@ -175,14 +175,14 @@ namespace OnceTwiceThrice
 
 		public void SwitchHero()
 		{
-			if (!_heroEnumerator.MoveNext())
+			if (!heroEnumerator.MoveNext())
 			{
-				_heroEnumerator = Heroes.GetEnumerator();
-				if (!_heroEnumerator.MoveNext())
+				heroEnumerator = Heroes.GetEnumerator();
+				if (!heroEnumerator.MoveNext())
 					throw new Exception("No heroes in the model");
 			}
 
-			CurrentHero = _heroEnumerator.Current;
+			CurrentHero = heroEnumerator.Current;
 		}
 	}
 
@@ -191,8 +191,8 @@ namespace OnceTwiceThrice
 		public static void Foreach<T>(this T[,] array, Action<int, int> act)
 		{
 			for (var i = 0; i < array.GetLength(0); i++)
-			for (var j = 0; j < array.GetLength(1); j++)
-				act(i, j);
+				for (var j = 0; j < array.GetLength(1); j++)
+					act(i, j);
 		}
 	}
 }

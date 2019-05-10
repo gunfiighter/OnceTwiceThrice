@@ -7,3 +7,12 @@ D:\УЧЁБА\ЯТП\OnceTwiceThrice\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.e
 D:\УЧЁБА\ЯТП\OnceTwiceThrice\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.pdb
 D:\УЧЁБА\ЯТП\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.exe
 D:\УЧЁБА\ЯТП\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.pdb
+D:\УЧЁБА\ЯТП\OnceTwiceThrice-master\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.exe.config
+D:\УЧЁБА\ЯТП\OnceTwiceThrice-master\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.exe
+D:\УЧЁБА\ЯТП\OnceTwiceThrice-master\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.pdb
+D:\УЧЁБА\ЯТП\OnceTwiceThrice-master\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.csprojAssemblyReference.cache
+D:\УЧЁБА\ЯТП\OnceTwiceThrice-master\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.Properties.Resources.resources
+D:\УЧЁБА\ЯТП\OnceTwiceThrice-master\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.csproj.GenerateResource.cache
+D:\УЧЁБА\ЯТП\OnceTwiceThrice-master\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.csproj.CoreCompileInputs.cache
+D:\УЧЁБА\ЯТП\OnceTwiceThrice-master\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.exe
+D:\УЧЁБА\ЯТП\OnceTwiceThrice-master\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.pdb
