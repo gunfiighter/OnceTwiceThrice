@@ -16,5 +16,13 @@ namespace OnceTwiceThrice
 				return true;
 			return base.CanStep(back);
 		}
+
+		public void CreateSpell()
+		{
+			var newX = 0;
+			var newY = 0;
+			Useful.XyPlusKeys(X, Y, this.CurrentAnimation.Direction, ref newX, ref newY);
+			Model.Spells.AddLast(new MatthiusSpell(Model, newX, newY, "Matthius/Spell/5"));
+		}
 	}
 }

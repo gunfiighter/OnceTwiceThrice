@@ -28,7 +28,15 @@ namespace OnceTwiceThrice
 				
 			//Отрисовка предметов
 			model.DrawItems(g);
-				
+
+			foreach (var spell in model.Spells)
+			{
+				g.DrawImage(spell.Picture,
+					new Point(
+						spell.X * DrawingScope, 
+						spell.Y * DrawingScope));
+			}
+
 			//Обводка героя
 			g.DrawRectangle(new Pen(Color.Gold, 2), 
 				GetPaintX(model.CurrentHero), 
@@ -66,6 +74,9 @@ namespace OnceTwiceThrice
 					case Keys.Tab:
 						model.CurrentHero.KeyMap.TurnOff();
 						model.SwitchHero();
+						break;
+					case Keys.Space:
+						model.CurrentHero.CreateSpell();
 						break;
 				}
 			}

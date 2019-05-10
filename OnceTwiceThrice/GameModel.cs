@@ -56,6 +56,7 @@ namespace OnceTwiceThrice
 		public Stack<IItems>[,] ItemsMap;
 		public LinkedList<IHero> Heroes;
 		public LinkedList<IMob> Mobs;
+		public LinkedList<ISpell> Spells;
 
 		public event Action OnWin;
 		public event Action OnGameOver;
@@ -99,6 +100,7 @@ namespace OnceTwiceThrice
 			});
 			Heroes = new LinkedList<IHero>();
 			Mobs = new LinkedList<IMob>();
+			Spells = new LinkedList<ISpell>();
 			
 			var mapDecoder = new MapDecoder(this);
 			

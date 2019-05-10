@@ -121,6 +121,7 @@ namespace OnceTwiceThrice
 			MX = X;
 			MY = Y;
 			CurrentAnimation = new Animation();
+			CurrentAnimation.Direction = Keys.Down;
 
 			OnStop += () =>
 			{
