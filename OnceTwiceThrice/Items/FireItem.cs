@@ -4,10 +4,13 @@ namespace OnceTwiceThrice
 {
 	public class FireItem : ItemBase, IItems
 	{
-		public Image Picture { get; }
-		public FireItem(int x, int y) : base(x, y)
+		public FireItem(GameModel model,int x, int y) : base(x, y, 4, "Fire")
 		{
-			Picture = Useful.GetImageByName("Fire/0");
+			model.OnTick += () =>
+			{
+				if (model.TickCount % 15 == 0)
+					this.ChangeSlide();
+			};
 		}
 
 		public bool CanStep(MovableBase mob) => false;

@@ -33,8 +33,8 @@ namespace OnceTwiceThrice
 			item = new Dictionary<char, Func<int, int, IItems>>();
 			item.Add('S', (x, y) => new StoneItem(x, y));
 //			item.Add('T', (x, y) => new TreeItem(x, y));
-			item.Add('F', (x, y) => new FireItem(x, y));
-			item.Add('D', (x, y) => new DestinationItem(x, y));
+			item.Add('F', (x, y) => new FireItem(model, x, y));
+			item.Add('D', (x, y) => new DestinationItem(model, x, y));
 			item.Add('A', (x, y) => new AgaricItem(model, x, y));
 
 			hero = new Dictionary<char, Func<GameModel, int, int, MovableBase>>();
@@ -50,6 +50,7 @@ namespace OnceTwiceThrice
 		private IEnumerator<IHero> heroEnumerator;
 		public readonly int Width;
 		public readonly int Height;
+		public int TickCount { get; private set; }
 		
 		public IBackground[,] BackMap;
 		public Stack<IItems>[,] ItemsMap;
@@ -80,7 +81,9 @@ namespace OnceTwiceThrice
 
 		public void Tick()
 		{
+			TickCount++;
 			OnTick?.Invoke();
+			
 		}
 		
 		public GameModel(Level lavel)

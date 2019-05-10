@@ -4,10 +4,9 @@ namespace OnceTwiceThrice
 {
 	public class StoneItem : ItemBase, IItems
 	{
-		public Image Picture { get; }
-		public StoneItem(int x, int y) : base(x, y)
+		public StoneItem(int x, int y) : base(x, y, 1, "Stone")
 		{
-			Picture = Useful.GetImageByName("Stone");
+			;
 		}
 
 		public bool CanStep(MovableBase mob) => false;
