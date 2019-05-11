@@ -1,3 +1,5 @@
+using System.Windows.Forms;
+
 namespace OnceTwiceThrice
 {
 	public class MobBase : MovableBase
@@ -14,16 +16,28 @@ namespace OnceTwiceThrice
 			{
 				if ((hero.MX == MX && hero.MY == MY) || (hero.X == MX && hero.Y == MY))
 				{
-					hero.Destroy();
+					var needDeath = true;
+					if (hero.GazeDirection == GazeDirection)
+					{
+						switch (GazeDirection)
+						{
+							case Keys.Right: if (X > hero.X) needDeath = false; break;
+							case Keys.Left: if (X < hero.X) needDeath = false; break;
+							case Keys.Up: if (Y < hero.Y) needDeath = false; break;
+							case Keys.Down: if (Y > hero.Y) needDeath = false; break;
+						}
+					}
+					if (needDeath)
+						hero.Destroy();
 					return;
 				}
 			}
 		}
-		
-		
+
+
 		public override double Speed
 		{
-			get { return 0.04; }
+			get { return 0.033; }
 		}
 	}
 }

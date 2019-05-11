@@ -41,7 +41,9 @@ namespace OnceTwiceThrice
 			hero.Add('M', (map, x, y) => new MatthiusHero(map, x, y));
             hero.Add('S', (map, x, y) => new SkimletHero(map, x, y));
             hero.Add('H', (map, x, y) => new HowardHero(map, x, y));
-            hero.Add('R', (map, x, y) => new RedGolemMob(map, x, y));
+
+			hero.Add('r', (map, x, y) => new RedGolemMob(map, x, y));
+			hero.Add('s', (map, x, y) => new SharkMob(map, x, y));
 		}
 	} 
 	
@@ -91,7 +93,7 @@ namespace OnceTwiceThrice
 		public GameModel(Level lavel)
 		{
 			Width = lavel.Background[0].Length;
-			Height = lavel.Background.Count;
+			Height = lavel.Background.Length;
 			
 			BackMap = new IBackground[Width, Height];
 			ItemsMap = new Stack<IItems>[Width, Height];

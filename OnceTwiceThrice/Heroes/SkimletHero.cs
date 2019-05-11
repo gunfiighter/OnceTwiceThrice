@@ -7,7 +7,8 @@ namespace OnceTwiceThrice
 {
 	public class SkimletHero : HeroBase, IHero
 	{
-		public SkimletHero(GameModel model, int X, int Y): base(model, "Skimlet/", X, Y)
+		public static string ImagePath = "Skimlet/";
+		public SkimletHero(GameModel model, int X, int Y): base(model, ImagePath, X, Y)
 		{
 			;
 		}
@@ -21,7 +22,7 @@ namespace OnceTwiceThrice
 
         public void CreateSpell()
         {
-            base.CreateSpell((x, y) => new SkimletSpell(this, x, y, "Skimlet/Spell/3"));
+            base.CreateSpell((x, y) => new SkimletSpell(this, x, y, ImagePath));
         }
     }
 

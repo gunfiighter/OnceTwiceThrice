@@ -1,3 +1,5 @@
+using System.Drawing;
+
 namespace OnceTwiceThrice
 {
 	public interface IHero : IMovable

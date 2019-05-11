@@ -30,6 +30,9 @@ namespace OnceTwiceThrice
 						TurnDirection(Keys.Up); break;
 				}
 			};
-		}	
+		}
+
+		public override sbyte SlidesCount => 4;
+		public override int SlideLatency => 13;
 	}
 }

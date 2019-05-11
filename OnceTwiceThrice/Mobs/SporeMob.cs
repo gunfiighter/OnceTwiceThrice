@@ -2,8 +2,9 @@ namespace OnceTwiceThrice
 {
 	public class SporeMob : MobBase, IMob
 	{
-		public override bool SkinIgnoreDirection => true; 
-		public SporeMob(GameModel model, int X, int Y): base(model, "Spore/0", X, Y)
+		public static string ImagePath = "Spore/";
+		
+		public SporeMob(GameModel model, int X, int Y): base(model, ImagePath, X, Y)
 		{
 			OnCantMove += (key) =>
 			{
@@ -11,6 +12,7 @@ namespace OnceTwiceThrice
 			};
 		}
 
+		public override bool SkinIgnoreDirection => true;
 		public override bool CanStep(IBackground background) => true;
 
 		public override double Speed => 0.03;

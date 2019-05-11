@@ -5,7 +5,8 @@ namespace OnceTwiceThrice
 {
 	public class MatthiusHero : HeroBase, IHero
 	{
-		public MatthiusHero(GameModel model, int X, int Y): base(model, "Matthius/", X, Y)
+		public static string ImagePath = "Matthius/";
+		public MatthiusHero(GameModel model, int X, int Y): base(model, ImagePath, X, Y)
 		{
 			;
 		}
@@ -26,13 +27,13 @@ namespace OnceTwiceThrice
 
 		public void CreateSpell()
 		{
-            base.CreateSpell((x, y) => new MatthiusSpell(this, x, y, "Matthius/Spell/3"));
+            base.CreateSpell((x, y) => new MatthiusSpell(this, x, y, ImagePath));
 		}
 	}
 
 	public class MatthiusSpell : SpellBase, ISpell
 	{
-		public MatthiusSpell(IHero hero, int X, int Y, string ImageFile) : base(hero, X, Y, ImageFile)
+		public MatthiusSpell(IHero hero, int X, int Y, string imageFile) : base(hero, X, Y, imageFile)
 		{
             var dict = new Dictionary<IMob, Action>();
 			foreach (var mob in Model.Mobs)
@@ -51,11 +52,11 @@ namespace OnceTwiceThrice
             if (ItemStack.Count > 0 && ItemStack.Peek() is ThreeItem)
                 Model.ItemsMap[X, Y].Pop();
 
-            OnDestroy += () =>
-            {
-                foreach (var act in dict)
-                    act.Key.OnMoveStart -= act.Value;
-            };
+			OnDestroy += () =>
+			{
+				foreach (var act in dict)
+					act.Key.OnMoveStart -= act.Value;
+			};
 		}
 	};
 }

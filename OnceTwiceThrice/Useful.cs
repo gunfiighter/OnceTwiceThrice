@@ -44,5 +44,25 @@ namespace OnceTwiceThrice
 			newX = x + dx;
 			newY = y + dy;
 		}
+
+		public static string DirectionName(Keys key)
+		{
+			switch (key)
+			{
+				case Keys.Up: return "Up";
+				case Keys.Down: return "Down";
+				case Keys.Left: return "Left";
+				case Keys.Right: return "Right";
+				default: throw new ArgumentException();
+			}
+		}
+
+		public static string[] CutArray(string[] array, int begin, int end)
+		{
+			var result = new string[end - begin + 1];
+			for (var i = begin; i <= end; i++)
+				result[i - begin] = array[i];
+			return result;
+		}
 	}
 }

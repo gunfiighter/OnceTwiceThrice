@@ -62,10 +62,11 @@ namespace OnceTwiceThrice
 		private void KeyDownInGame(object sender, KeyEventArgs args)
 		{
 			var keyCode = args.KeyCode;
+
+			if (!model.CurrentHero.KeyMap.Enable)
+				return;
 			if (Useful.KeyIsMove(keyCode))
 			{
-                if (!model.CurrentHero.KeyMap.Enable)
-                    return;
 				model.CurrentHero.KeyMap.TurnOn(keyCode);
 				model.CurrentHero.MakeMove(keyCode);
 			}
@@ -82,6 +83,21 @@ namespace OnceTwiceThrice
                             !model.CurrentHero.CurrentAnimation.IsMoving)
 						    model.CurrentHero.CreateSpell();
 						break;
+					case Keys.ControlKey:
+						switch (model.CurrentHero.GazeDirection)
+						{
+							case Keys.Up:
+								model.CurrentHero.GazeDirection = Keys.Right;
+
+								break;
+							case Keys.Down:
+								model.CurrentHero.GazeDirection = Keys.Left; break;
+							case Keys.Right:
+								model.CurrentHero.GazeDirection = Keys.Down; break;
+							case Keys.Left:
+								model.CurrentHero.GazeDirection = Keys.Up; break;
+						}
+						break;
 				}
 			}
 		}
@@ -93,10 +109,6 @@ namespace OnceTwiceThrice
 
 		private void TickInGame(object sender, EventArgs args)
 		{
-//			foreach (var hero in model.Heroes)
-//				hero.MakeAnimation();
-//			foreach (var mob in model.Mobs)
-//				mob.MakeAnimation();
 			model.Tick();
 			Invalidate();
 		}
@@ -147,7 +159,6 @@ namespace OnceTwiceThrice
 		{
 			DoubleBuffered = true;
 			var levels = new LevelsList();
-			//PlayTheGame(levels.Levels[0]);
 			PlayTheGame(levels.Levels[1]);
 		}
 	}

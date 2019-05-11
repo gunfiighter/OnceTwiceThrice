@@ -57,6 +57,7 @@
     <Compile Include="Heroes\ISpell.cs" />
     <Compile Include="Heroes\SpellBase.cs" />
     <Compile Include="Items\ThreeItem.cs" />
+    <Compile Include="Mobs\SharkMob.cs" />
     <Compile Include="Useful.cs" />
     <Compile Include="Heroes\HeroBase.cs" />
     <Compile Include="Heroes\SkimletHero.cs" />

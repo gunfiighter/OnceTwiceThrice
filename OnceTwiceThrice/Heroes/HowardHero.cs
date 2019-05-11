@@ -7,7 +7,8 @@ namespace OnceTwiceThrice
 {
     public class HowardHero : HeroBase, IHero
     {
-        public HowardHero(GameModel model, int X, int Y) : base(model, "Howard/", X, Y)
+		public static string ImagePath = "Howard/";
+		public HowardHero(GameModel model, int X, int Y) : base(model, ImagePath, X, Y)
         {
             ;
         }
@@ -21,7 +22,7 @@ namespace OnceTwiceThrice
 
         public void CreateSpell()
         {
-            base.CreateSpell((x, y) => new HowardSpell(this, x, y, "Howard/Spell/6"));
+            base.CreateSpell((x, y) => new HowardSpell(this, x, y, ImagePath));
         }
     }
 
@@ -35,8 +36,8 @@ namespace OnceTwiceThrice
                 {
                     var stack = Model.ItemsMap[X, Y];
 
-                    if (stack.Count == 0 || stack.Peek() is StoneItem)
-                        Model.ItemsMap[X, Y].Push(new ThreeItem(X, Y));
+                    if (stack.Count == 0)// || stack.Peek() is StoneItem)
+						stack.Push(new ThreeItem(X, Y));
                 }
             };
         }

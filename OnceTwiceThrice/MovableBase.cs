@@ -24,7 +24,7 @@ namespace OnceTwiceThrice
 	public interface IMovable
 	{
         GameModel Model { get; }
-		Image Image { get; }
+		Image Image { get; set; }
 		KeyMap KeyMap { get; set; }
 		void MakeMove(Keys key);
 		void MakeAnimation();
@@ -39,42 +39,32 @@ namespace OnceTwiceThrice
         event Action OnMoveStart;
         bool Explodable { get; }
         Animation CurrentAnimation { get; }
-        Keys GazeDirection { get; }
+        Keys GazeDirection { get; set; }
         void LockKeyMap();
         void UnlockKeyMap();
-    }
+		void UpdateImage();
+
+	}
 
 	public class MovableBase : IMovable
 	{
-        //public Image Image
-        //{
-        //    get
-        //    {
-        //        if (!SkinIgnoreDirection)
-        //        {
-        //            switch (GazeDirection)
-        //            {
-        //                case Keys.Up: return goUp[0];
-        //                case Keys.Down: return goDown[0];
-        //                case Keys.Right: return goRight[0];
-        //                case Keys.Left: return goLeft[0];
-        //            }
-        //        }
+        public Image Image { get; set; }
 
-        //        return goDown[0];
-        //    }
-        //}
-        public Image Image { get; protected set; }
-
-        public Keys GazeDirection { get; private set; }
+		private Keys gazeDirection;
+		public Keys GazeDirection {
+			get => gazeDirection;
+			set
+			{
+				gazeDirection = value;
+				UpdateImage();
+			}
+		}
 		
 		private List<Image> goUp;
 		private List<Image> goDown;
 		private List<Image> goRight;
 		private List<Image> goLeft;
 		
-	
-
 		public GameModel Model { get; }
 
 		public event Action OnStop; //Вызывается при завершени анимации шага
@@ -104,6 +94,7 @@ namespace OnceTwiceThrice
 		public double DY { get; private set; }
 
 		public Animation CurrentAnimation { get; private set; }
+		public virtual sbyte SlidesCount { get => 1; }
 
 		public virtual double Speed
 		{
@@ -111,36 +102,37 @@ namespace OnceTwiceThrice
 		}
 		
 		public virtual bool SkinIgnoreDirection => false;
+		public virtual int SlideLatency { get => 10;  }
 
-		public MovableBase(GameModel model, string ImageFile, int X, int Y)
+		public MovableBase(GameModel model, string imageFile, int x, int y)
 		{
 			this.Model = model;
 			KeyMap = new KeyMap();
-
 			goDown = new List<Image>();
+			goUp = new List<Image>();
+			goRight = new List<Image>();
+			goLeft = new List<Image>();
 			if (!SkinIgnoreDirection)
 			{
-				goUp = new List<Image>();
-				goRight = new List<Image>();
-				goLeft = new List<Image>();
-
-				goUp.Add(Useful.GetImageByName(ImageFile + "Up/0"));
-				goDown.Add(Useful.GetImageByName(ImageFile + "Down/0"));
-				goRight.Add(Useful.GetImageByName(ImageFile + "Right/0"));
-				goLeft.Add(Useful.GetImageByName(ImageFile + "Left/0"));
+				
+				for(int i = 0; i < this.SlidesCount; i++)
+				{
+					goUp.Add(Useful.GetImageByName(imageFile + "Up/" + i));
+					goDown.Add(Useful.GetImageByName(imageFile + "Down/" + i));
+					goRight.Add(Useful.GetImageByName(imageFile + "Right/" + i));
+					goLeft.Add(Useful.GetImageByName(imageFile + "Left/" + i));
+				}
 			}
 			else
-			{
-				goDown.Add(Useful.GetImageByName(ImageFile));
-			}
-
-            Image = goDown[0];
+				for (var i = 0; i < SlidesCount; i++)
+					goDown.Add(Useful.GetImageByName(imageFile + i));
+			
 			GazeDirection = Keys.Down;
 			
-			this.X = X;
-			this.Y = Y;
-			MX = X;
-			MY = Y;
+			this.X = x;
+			this.Y = y;
+			MX = x;
+			MY = y;
 			CurrentAnimation = new Animation();
 			CurrentAnimation.Direction = Keys.Down;
 
@@ -149,7 +141,7 @@ namespace OnceTwiceThrice
                 if (!KeyMap.Enable)
                     return;
 				if (KeyMap[CurrentAnimation.Direction] &&
-				    Model.IsInsideMap(X, Y, CurrentAnimation.Direction))
+				    Model.IsInsideMap(x, y, CurrentAnimation.Direction))
 				{
 					MakeMove(CurrentAnimation.Direction);
 					return;
@@ -177,20 +169,10 @@ namespace OnceTwiceThrice
 				}
 			};
 		}
+
 		public void MakeMove(Keys key)
 		{
 			GazeDirection = key;
-
-            if (!SkinIgnoreDirection)
-            {
-                switch (key)
-                {
-                    case Keys.Down: Image = goDown[0]; break;
-                    case Keys.Up: Image = goUp[0]; break;
-                    case Keys.Right: Image = goRight[0]; break;
-                    case Keys.Left: Image = goLeft[0]; break;
-                }
-            }
 
 			if (CurrentAnimation.IsMoving)
 				return;
@@ -218,6 +200,8 @@ namespace OnceTwiceThrice
 
 		public void MakeAnimation()
 		{
+			if (SkinIgnoreDirection && Model.TickCount % SlideLatency == 0)
+				AnimatedMove();
 			if (!CurrentAnimation.IsMoving)
 				return;
 			int newX = 0;
@@ -225,7 +209,8 @@ namespace OnceTwiceThrice
 			Useful.XyPlusKeys(0, 0, CurrentAnimation.Direction, ref newX, ref newY);
 			DX += newX * Speed;
 			DY += newY * Speed;
-			
+			if (Model.TickCount % SlideLatency == 0)
+				AnimatedMove();
 			if (1 - Math.Abs(DX) < 0.01 || 1 - Math.Abs(DY) < 0.01)
 			{
 				if (1 - Math.Abs(DX) < -0.01 || 1 - Math.Abs(DY) < -0.01)
@@ -240,12 +225,35 @@ namespace OnceTwiceThrice
 			}
 		}
 
+		public void AnimatedMove()
+		{
+			slideCounter++;
+			if (slideCounter == this.SlidesCount) slideCounter = 0;
+			UpdateImage();
+		}
+
+		public void UpdateImage()
+		{
+			if (!SkinIgnoreDirection)
+			{
+				switch (GazeDirection)
+				{
+					case Keys.Down: Image = goDown[slideCounter]; break;
+					case Keys.Up: Image = goUp[slideCounter]; break;
+					case Keys.Right: Image = goRight[slideCounter]; break;
+					case Keys.Left: Image = goLeft[slideCounter]; break;
+				}
+			} else
+				Image = goDown[slideCounter];
+		}
+
+		private int slideCounter = 0;
+		
+
 		public void Destroy()
 		{
 			OnDestroy?.Invoke();
 		}
-
-		//public virtual bool IsHero() => false;
 
 		public bool AllowToMove(Keys key)
 		{
