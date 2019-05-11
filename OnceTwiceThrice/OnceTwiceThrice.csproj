@@ -53,8 +53,10 @@
     <Compile Include="Backgrounds\IBackground.cs" />
     <Compile Include="Backgrounds\WaterBackground.cs" />
     <Compile Include="GameModel.cs" />
+    <Compile Include="Heroes\HowardHero.cs" />
     <Compile Include="Heroes\ISpell.cs" />
     <Compile Include="Heroes\SpellBase.cs" />
+    <Compile Include="Items\ThreeItem.cs" />
     <Compile Include="Useful.cs" />
     <Compile Include="Heroes\HeroBase.cs" />
     <Compile Include="Heroes\SkimletHero.cs" />

@@ -25,3 +25,12 @@ D:\УЧЁБА\ЯТП\OnceTwiceThrice\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\O
 D:\УЧЁБА\ЯТП\OnceTwiceThrice\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.csproj.CoreCompileInputs.cache
 D:\УЧЁБА\ЯТП\OnceTwiceThrice\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.exe
 D:\УЧЁБА\ЯТП\OnceTwiceThrice\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.pdb
+C:\Users\Kirom Ekexity\Desktop\Python\OnceTwiceThrice\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.exe.config
+C:\Users\Kirom Ekexity\Desktop\Python\OnceTwiceThrice\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.exe
+C:\Users\Kirom Ekexity\Desktop\Python\OnceTwiceThrice\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.pdb
+C:\Users\Kirom Ekexity\Desktop\Python\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.Properties.Resources.resources
+C:\Users\Kirom Ekexity\Desktop\Python\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.csproj.GenerateResource.Cache
+C:\Users\Kirom Ekexity\Desktop\Python\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.csproj.CoreCompileInputs.cache
+C:\Users\Kirom Ekexity\Desktop\Python\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.exe
+C:\Users\Kirom Ekexity\Desktop\Python\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.pdb
+C:\Users\Kirom Ekexity\Desktop\Python\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.csprojResolveAssemblyReference.cache

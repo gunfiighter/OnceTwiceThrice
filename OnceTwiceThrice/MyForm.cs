@@ -64,6 +64,8 @@ namespace OnceTwiceThrice
 			var keyCode = args.KeyCode;
 			if (Useful.KeyIsMove(keyCode))
 			{
+                if (!model.CurrentHero.KeyMap.Enable)
+                    return;
 				model.CurrentHero.KeyMap.TurnOn(keyCode);
 				model.CurrentHero.MakeMove(keyCode);
 			}
@@ -76,7 +78,9 @@ namespace OnceTwiceThrice
 						model.SwitchHero();
 						break;
 					case Keys.Space:
-						model.CurrentHero.CreateSpell();
+                        if (model.CurrentHero.KeyMap.GetAnyOnDirection() == Keys.None &&
+                            !model.CurrentHero.CurrentAnimation.IsMoving)
+						    model.CurrentHero.CreateSpell();
 						break;
 				}
 			}

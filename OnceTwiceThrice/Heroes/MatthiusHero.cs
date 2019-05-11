@@ -26,44 +26,36 @@ namespace OnceTwiceThrice
 
 		public void CreateSpell()
 		{
-			var newX = 0;
-			var newY = 0;
-			Useful.XyPlusKeys(X, Y, this.CurrentAnimation.Direction, ref newX, ref newY);
-			Model.Spells.AddLast(new MatthiusSpell(Model, newX, newY, "Matthius/Spell/3"));
+            base.CreateSpell((x, y) => new MatthiusSpell(this, x, y, "Matthius/Spell/3"));
 		}
 	}
 
 	public class MatthiusSpell : SpellBase, ISpell
 	{
-		private int startTick;
-		private Dictionary<IMob, Action> dict;
-
-		public MatthiusSpell(GameModel model, int X, int Y, string ImageFile) : base(model, X, Y, ImageFile)
+		public MatthiusSpell(IHero hero, int X, int Y, string ImageFile) : base(hero, X, Y, ImageFile)
 		{
-			dict = new Dictionary<IMob, Action>();
-			foreach (var mob in model.Mobs)
-			{
-				dict.Add(mob, () =>
-				{
-					if ((mob.MX == X && mob.MY == Y) || (mob.X == X && mob.Y == Y))
-						mob.Destroy();
-				});
-				mob.OnMoveStart += dict[mob];
-			}
-			startTick = model.TickCount;
+            var dict = new Dictionary<IMob, Action>();
+			foreach (var mob in Model.Mobs)
+                if (mob.Explodable)
+			    {
+				    dict.Add(mob, () =>
+				    {
+					    if ((mob.MX == X && mob.MY == Y) || (mob.X == X && mob.Y == Y))
+						    mob.Destroy();
+				    });
+				    mob.OnMoveStart += dict[mob];
+			    }
 
-			model.OnTick += onTick;
-		}
+            var ItemStack = Model.ItemsMap[X, Y];
 
-		private void onTick()
-		{
-			if (model.TickCount - startTick >= 200)
-			{
-				foreach (var act in dict)
-					act.Key.OnMoveStart -= act.Value;
-				model.OnTick -= onTick;
-				model.Spells.Remove(this);
-			}
+            if (ItemStack.Count > 0 && ItemStack.Peek() is ThreeItem)
+                Model.ItemsMap[X, Y].Pop();
+
+            OnDestroy += () =>
+            {
+                foreach (var act in dict)
+                    act.Key.OnMoveStart -= act.Value;
+            };
 		}
 	};
 }

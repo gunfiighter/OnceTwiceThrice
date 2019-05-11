@@ -15,9 +15,12 @@ namespace OnceTwiceThrice
 		public bool Left;
 		public bool Right;
 
+        public bool Enable;
+
 		public KeyMap()
 		{
 			Up = Down = Left = Right = false;
+            Enable = true;
 		}
 
 		public bool this[Keys key]

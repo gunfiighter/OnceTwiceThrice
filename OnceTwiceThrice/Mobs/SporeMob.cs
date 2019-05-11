@@ -14,5 +14,6 @@ namespace OnceTwiceThrice
 		public override bool CanStep(IBackground background) => true;
 
 		public override double Speed => 0.03;
-	}
+        public override bool Explodable => false;
+    }
 }

@@ -7,19 +7,49 @@ using System.Threading.Tasks;
 
 namespace OnceTwiceThrice
 {
-	public class SpellBase
+	public abstract class SpellBase
 	{
 		public Image Picture { get; }
-		public int X { get; }
-		public int Y { get; }
-		public GameModel model;
+        public int X { get; }
+        public int Y { get; }
+		public readonly GameModel Model;
+        public readonly IHero Hero;
+        public event Action OnDestroy;
 
-		public SpellBase(GameModel model, int X, int Y, string ImageFile)
+        protected int Interval;
+        protected int StartTime;
+
+        protected void Destroy()
+        {
+            OnDestroy?.Invoke();
+        }
+
+		public SpellBase(IHero hero, int X, int Y, string ImageFile)
 		{
-			this.model = model;
+            Interval = 100;
+			this.Model = hero.Model;
+            this.Hero = hero;
 			this.X = X;
 			this.Y = Y;
 			Picture = Useful.GetImageByName(ImageFile);
+
+            StartTime = Model.TickCount;
+            Hero.LockKeyMap();
+
+            OnDestroy += () => Model.Spells.Remove(this as ISpell);
+
+            Model.OnTick += onTick;
 		}
+
+        private void onTick()
+        {
+            if (Model.TickCount - StartTime > Interval * 6 / 10)
+                Hero.UnlockKeyMap();
+            if (Model.TickCount - StartTime > Interval)
+            {
+                Destroy();
+                Model.OnTick -= onTick;
+            }
+        }
 	}
 }

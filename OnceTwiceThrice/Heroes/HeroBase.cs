@@ -1,3 +1,5 @@
+using System;
+
 namespace OnceTwiceThrice
 {
 	public class HeroBase : MovableBase
@@ -15,6 +17,14 @@ namespace OnceTwiceThrice
 			};
 			OnMoveStart += MoveStart;
 		}
+
+        public void CreateSpell(Func<int, int, ISpell> spell)
+        {
+            var newX = 0;
+            var newY = 0;
+            Useful.XyPlusKeys(X, Y, this.GazeDirection, ref newX, ref newY);
+            Model.Spells.AddLast(spell(newX, newY));
+        }
 		
 		public virtual void MoveStart()
 		{

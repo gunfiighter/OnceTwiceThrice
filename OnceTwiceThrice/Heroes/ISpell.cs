@@ -10,7 +10,7 @@ namespace OnceTwiceThrice
 	public interface ISpell
 	{
 		Image Picture { get; }
-		int X { get; }
-		int Y { get; }
+        int X { get; }
+        int Y { get; }
 	}
 }

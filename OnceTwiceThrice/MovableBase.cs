@@ -23,6 +23,7 @@ namespace OnceTwiceThrice
 
 	public interface IMovable
 	{
+        GameModel Model { get; }
 		Image Image { get; }
 		KeyMap KeyMap { get; set; }
 		void MakeMove(Keys key);
@@ -34,29 +35,38 @@ namespace OnceTwiceThrice
 		int MY { get; }
 		double DX { get; }
 		double DY { get; }
-	}
+
+        event Action OnMoveStart;
+        bool Explodable { get; }
+        Animation CurrentAnimation { get; }
+        Keys GazeDirection { get; }
+        void LockKeyMap();
+        void UnlockKeyMap();
+    }
 
 	public class MovableBase : IMovable
 	{
-		public Image Image {
-			get
-			{
-				if (!SkinIgnoreDirection)
-				{
-					switch (lastDirection)
-					{
-						case Keys.Up: return goUp[0];
-						case Keys.Down: return goDown[0];
-						case Keys.Right: return goRight[0];
-						case Keys.Left: return goLeft[0];
-					}
-				}
+        //public Image Image
+        //{
+        //    get
+        //    {
+        //        if (!SkinIgnoreDirection)
+        //        {
+        //            switch (GazeDirection)
+        //            {
+        //                case Keys.Up: return goUp[0];
+        //                case Keys.Down: return goDown[0];
+        //                case Keys.Right: return goRight[0];
+        //                case Keys.Left: return goLeft[0];
+        //            }
+        //        }
 
-			return goDown[0];
-			}
-		}
+        //        return goDown[0];
+        //    }
+        //}
+        public Image Image { get; protected set; }
 
-		private Keys lastDirection;
+        public Keys GazeDirection { get; private set; }
 		
 		private List<Image> goUp;
 		private List<Image> goDown;
@@ -65,7 +75,7 @@ namespace OnceTwiceThrice
 		
 	
 
-		public GameModel Model;
+		public GameModel Model { get; }
 
 		public event Action OnStop; //Вызывается при завершени анимации шага
 		public event Action<Keys> OnCantMove; //Вызывается при невозможности двигаться в заданном направлении
@@ -73,6 +83,16 @@ namespace OnceTwiceThrice
 		public event Action OnMoveStart; //Вызывается когда принято решение двигаться
 		
 		public KeyMap KeyMap { get; set; }
+
+        public void LockKeyMap()
+        {
+            KeyMap.Enable = false;
+        }
+
+        public void UnlockKeyMap()
+        {
+            KeyMap.Enable = true;
+        }
 
 		public int X { get; private set; }
 		public int Y { get; private set; }
@@ -83,7 +103,7 @@ namespace OnceTwiceThrice
 		public double DX { get; private set; }
 		public double DY { get; private set; }
 
-		public Animation CurrentAnimation;
+		public Animation CurrentAnimation { get; private set; }
 
 		public virtual double Speed
 		{
@@ -114,7 +134,8 @@ namespace OnceTwiceThrice
 				goDown.Add(Useful.GetImageByName(ImageFile));
 			}
 
-			lastDirection = Keys.Down;
+            Image = goDown[0];
+			GazeDirection = Keys.Down;
 			
 			this.X = X;
 			this.Y = Y;
@@ -125,6 +146,8 @@ namespace OnceTwiceThrice
 
 			OnStop += () =>
 			{
+                if (!KeyMap.Enable)
+                    return;
 				if (KeyMap[CurrentAnimation.Direction] &&
 				    Model.IsInsideMap(X, Y, CurrentAnimation.Direction))
 				{
@@ -156,7 +179,19 @@ namespace OnceTwiceThrice
 		}
 		public void MakeMove(Keys key)
 		{
-			lastDirection = key;
+			GazeDirection = key;
+
+            if (!SkinIgnoreDirection)
+            {
+                switch (key)
+                {
+                    case Keys.Down: Image = goDown[0]; break;
+                    case Keys.Up: Image = goUp[0]; break;
+                    case Keys.Right: Image = goRight[0]; break;
+                    case Keys.Left: Image = goLeft[0]; break;
+                }
+            }
+
 			if (CurrentAnimation.IsMoving)
 				return;
 
@@ -202,7 +237,6 @@ namespace OnceTwiceThrice
 				DX = DY = 0;
 				CurrentAnimation.IsMoving = false;
 				OnStop?.Invoke();
-
 			}
 		}
 
@@ -230,5 +264,6 @@ namespace OnceTwiceThrice
 
 		public virtual bool CanStep(IItems item) => false;
 		public virtual bool CanStep(IBackground background) => false;
+        public virtual bool Explodable => true;
 	}
 }

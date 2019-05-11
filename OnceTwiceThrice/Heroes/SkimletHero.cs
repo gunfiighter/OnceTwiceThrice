@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -17,12 +19,20 @@ namespace OnceTwiceThrice
 			return base.CanStep(back);
 		}
 
-		public void CreateSpell()
-		{
-			var newX = 0;
-			var newY = 0;
-			Useful.XyPlusKeys(X, Y, this.CurrentAnimation.Direction, ref newX, ref newY);
-			Model.Spells.AddLast(new MatthiusSpell(Model, newX, newY, "Matthius/Spell/5"));
-		}
-	}
+        public void CreateSpell()
+        {
+            base.CreateSpell((x, y) => new SkimletSpell(this, x, y, "Skimlet/Spell/3"));
+        }
+    }
+
+    public class SkimletSpell : SpellBase, ISpell
+    {
+        public SkimletSpell(IHero hero, int X, int Y, string ImageFile) : base(hero, X, Y, ImageFile)
+        {
+            var ItemStack = Model.ItemsMap[X, Y];
+
+            if (ItemStack.Count > 0 && ItemStack.Peek() is FireItem)
+                Model.ItemsMap[X, Y].Pop();
+        }
+    };
 }

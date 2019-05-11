@@ -32,15 +32,16 @@ namespace OnceTwiceThrice
 			
 			item = new Dictionary<char, Func<int, int, IItems>>();
 			item.Add('S', (x, y) => new StoneItem(x, y));
-//			item.Add('T', (x, y) => new TreeItem(x, y));
+			item.Add('T', (x, y) => new ThreeItem(x, y));
 			item.Add('F', (x, y) => new FireItem(model, x, y));
 			item.Add('D', (x, y) => new DestinationItem(model, x, y));
 			item.Add('A', (x, y) => new AgaricItem(model, x, y));
 
 			hero = new Dictionary<char, Func<GameModel, int, int, MovableBase>>();
 			hero.Add('M', (map, x, y) => new MatthiusHero(map, x, y));
-			hero.Add('S', (map, x, y) => new SkimletHero(map, x, y));
-			hero.Add('R', (map, x, y) => new RedGolemMob(map, x, y));
+            hero.Add('S', (map, x, y) => new SkimletHero(map, x, y));
+            hero.Add('H', (map, x, y) => new HowardHero(map, x, y));
+            hero.Add('R', (map, x, y) => new RedGolemMob(map, x, y));
 		}
 	} 
 	
