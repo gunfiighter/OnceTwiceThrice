@@ -44,12 +44,21 @@ namespace OnceTwiceThrice
         void LockKeyMap();
         void UnlockKeyMap();
 		void UpdateImage();
-
+        bool NeedInvalidate { get; set; }
 	}
 
 	public class MovableBase : IMovable
 	{
-        public Image Image { get; set; }
+        private Image _image;
+        public Image Image
+        {
+            get => _image;
+            set
+            {
+                NeedInvalidate = true;
+                _image = value;
+            }
+        }
 
 		private Keys gazeDirection;
 		public Keys GazeDirection {
@@ -162,6 +171,7 @@ namespace OnceTwiceThrice
 					model.OnTick -= MakeAnimation;
 					model.Heroes.Remove(this as IHero);
 				}
+                model.NeedInvalidate = true;
 			};
 		}
 
@@ -199,7 +209,10 @@ namespace OnceTwiceThrice
 				AnimatedMove();
 			if (!CurrentAnimation.IsMoving)
 				return;
-			int newX = 0;
+
+            NeedInvalidate = true;
+
+            int newX = 0;
 			int newY = 0;
 			Useful.XyPlusKeys(0, 0, CurrentAnimation.Direction, ref newX, ref newY);
 			DX += newX * Speed;
@@ -257,6 +270,12 @@ namespace OnceTwiceThrice
 			Useful.XyPlusKeys(X, Y, key, ref newX, ref newY);
 			if (!Model.IsInsideMap(newX, newY))
 				return false;
+
+            if (this is IHero)
+                foreach (var mob in Model.MobMap[newX, newY])
+                    if (mob is IHero)
+                        return false;
+
 			if (Model.ItemsMap[newX, newY].Count > 0)
 				return CanMoveOn(Model.ItemsMap[newX, newY].Peek());
 			return CanMoveOn(Model.BackMap[newX, newY]);
@@ -280,6 +299,8 @@ namespace OnceTwiceThrice
             if (nextDirection != Keys.None)
                 MakeMove(nextDirection);
         }
+
+        public bool NeedInvalidate { get; set; }
 
 		public virtual bool CanStep(IItems item) => false;
 		public virtual bool CanStep(IBackground background) => false;

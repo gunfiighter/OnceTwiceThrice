@@ -10,7 +10,16 @@ namespace OnceTwiceThrice
 {
 	public abstract class SpellBase
 	{
-		public Image Picture { get; private set; }
+        private Image _picture;
+		public Image Picture
+        {
+            get => _picture;
+            private set
+            {
+                NeedInvalidate = true;
+                _picture = value;
+            }
+        }
         public int X { get; }
         public int Y { get; }
 		public readonly GameModel Model;
@@ -27,7 +36,9 @@ namespace OnceTwiceThrice
         }
 		private int SlideCounter;
 
-		public SpellBase(IHero hero, int X, int Y, string imageFile)
+        public bool NeedInvalidate { get; set; }
+
+        public SpellBase(IHero hero, int X, int Y, string imageFile)
 		{
             Interval = 100;
 			this.Model = hero.Model;
@@ -48,7 +59,11 @@ namespace OnceTwiceThrice
             StartTime = Model.TickCount;
             Hero.LockKeyMap();
 
-            OnDestroy += () => Model.Spells.Remove(this as ISpell);
+            OnDestroy += () =>
+            {
+                Model.Spells.Remove(this as ISpell);
+                Model.NeedInvalidate = true;
+            };
 
             Model.OnTick += onTick;
 			Hero.Image = CastSlides[0];

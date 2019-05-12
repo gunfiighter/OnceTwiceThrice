@@ -20,7 +20,7 @@ namespace OnceTwiceThrice
                 }
 
                 if (Model.BackMap[X, Y] is WaterBackground)
-                    Model.BackMap[X, Y] = new IceBackground(Model);
+                    Model.BackMap[X, Y] = new IceBackground(Model, X, Y);
             };
 
             OnCantMove += (key) =>
@@ -50,7 +50,6 @@ namespace OnceTwiceThrice
 
         public override double Speed => 0.03;
         public override sbyte SlidesCount => 4;
-        public override bool DestroyBySkimletSpell => true;
 
     }
 }

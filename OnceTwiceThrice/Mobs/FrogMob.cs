@@ -20,7 +20,7 @@ namespace OnceTwiceThrice
                 }
 
                 if (Model.BackMap[X, Y] is IceBackground)
-                    Model.BackMap[X, Y] = new WaterBackground(Model);
+                    Model.BackMap[X, Y] = new WaterBackground(Model, X, Y);
             };
 
             OnCantMove += (key) =>

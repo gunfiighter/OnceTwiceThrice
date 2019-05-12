@@ -36,7 +36,7 @@ namespace OnceTwiceThrice
 				if ((mob.MX == MX && mob.MY == MY) || (mob.X == MX && mob.Y == MY))
 				{
 					var needDeath = true;
-					if (mob.GazeDirection == GazeDirection)
+					if (mob.CurrentAnimation.IsMoving && mob.GazeDirection == GazeDirection)
 					{
 						switch (GazeDirection)
 						{

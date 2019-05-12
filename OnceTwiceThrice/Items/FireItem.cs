@@ -6,7 +6,9 @@ namespace OnceTwiceThrice
 	{
 		public FireItem(GameModel model,int x, int y) : base(model, x, y, 4, "Fire")
 		{
-			model.OnTick += () =>
+            if (Model.BackMap[X, Y] is GrassBackground)
+                Model.BackMap[X, Y] = new BurnedBackground(Model, X, Y);
+            model.OnTick += () =>
 			{
 				if (model.TickCount % 15 == 0)
 					this.ChangeSlide();

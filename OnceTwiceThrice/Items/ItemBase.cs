@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 
 namespace OnceTwiceThrice
@@ -6,14 +7,27 @@ namespace OnceTwiceThrice
     {
         public int X { get; }
         public int Y { get; }
-        public Image Picture { get; private set; }
+
+        private Image _picture;
+        public Image Picture
+        {
+            get => _picture;
+            private set
+            {
+                NeedInvalidate = true;
+                _picture = value;
+            }
+        }
+
         public GameModel Model { get; }
 		protected int animationCounter { get; set; }
 		private sbyte animationMove = 1;
 		private readonly Image[] slides;
 		private readonly int slidesCount;
+        public bool NeedInvalidate { get; set; }
+        public event Action OnDestroy;
 
-		public ItemBase(GameModel model, int x, int y, int SlidesCount, string mobName)
+        public ItemBase(GameModel model, int x, int y, int SlidesCount, string mobName)
 		{
             this.Model = model;
 			this.X = x;
@@ -25,7 +39,18 @@ namespace OnceTwiceThrice
 			animationCounter = 0;
 			Picture = slides[animationCounter];
 			slidesCount = SlidesCount;
+
+            OnDestroy += () =>
+            {
+                Model.ItemsMap[X, Y].Pop();
+                Model.NeedInvalidate = true;
+            };
 		}
+
+        public void Destroy()
+        {
+            OnDestroy?.Invoke();
+        }
 
 		protected void ChangeSlide()
 		{

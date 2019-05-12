@@ -10,6 +10,9 @@ namespace OnceTwiceThrice
 	public interface IBackground
 	{
 		Image Picture { get; }
+        int X { get; }
+        int Y { get; }
+        bool NeedInvalidate { get; set; }
 		bool CanStep(MovableBase mob); //Можно ли наступить на объект
 		bool CanStop(MovableBase mob); //Блокирует ли фон команды на движения мобов, находящемся на нем
 	}

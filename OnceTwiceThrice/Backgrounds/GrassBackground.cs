@@ -4,7 +4,7 @@ namespace OnceTwiceThrice
 {
 	public class GrassBackground : BackgroundBase, IBackground 
 	{
-		public GrassBackground(GameModel model) : base("Grass", 1)
+		public GrassBackground(GameModel model, int x, int y) : base(x, y, "Grass", 1)
 		{
 			;
 		}

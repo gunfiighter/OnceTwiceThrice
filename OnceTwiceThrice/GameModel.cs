@@ -17,18 +17,18 @@ namespace OnceTwiceThrice
 	
 	public class MapDecoder
 	{
-		public Dictionary<char, IBackground> background;
+		public Dictionary<char, Func<int, int, IBackground>> background;
 		public Dictionary<char, Func<int, int, IItems>> item;
 		public Dictionary<char, Func<GameModel, int, int, MovableBase>> hero;
 
 		public MapDecoder(GameModel model)
 		{
-			background = new Dictionary<char, IBackground>();
-			background.Add('G', new GrassBackground(model));
-			background.Add('B', new BurnedBackground(model));
-			background.Add('W', new WaterBackground(model));
-			background.Add('L', new LavaBackground(model));
-			background.Add('I', new IceBackground(model));
+			background = new Dictionary<char, Func<int, int, IBackground>>();
+			background.Add('G', (x, y) => new GrassBackground(model, x, y));
+			background.Add('B', (x, y) => new BurnedBackground(model, x, y));
+			background.Add('W', (x, y) => new WaterBackground(model, x, y));
+			background.Add('L', (x, y) => new LavaBackground(model, x, y));
+			background.Add('I', (x, y) => new IceBackground(model, x, y));
 			
 			item = new Dictionary<char, Func<int, int, IItems>>();
 			item.Add('S', (x, y) => new StoneItem(model, x, y));
@@ -56,6 +56,8 @@ namespace OnceTwiceThrice
 		public readonly int Width;
 		public readonly int Height;
 		public int TickCount { get; private set; }
+
+        public bool NeedInvalidate { get; set; }
 		
 		public IBackground[,] BackMap;
 		public Stack<IItems>[,] ItemsMap;
@@ -117,7 +119,7 @@ namespace OnceTwiceThrice
 			var mapDecoder = new MapDecoder(this);
 			
 			//Заполнение фона
-			BackMap.Foreach((x, y) => { BackMap[x, y] = mapDecoder.background[lavel.Background[y][x]]; });
+			BackMap.Foreach((x, y) => { BackMap[x, y] = mapDecoder.background[lavel.Background[y][x]](x, y); });
 			
 			//Заполнение объектами
 			lavel.Items.Foreach((x, y) =>

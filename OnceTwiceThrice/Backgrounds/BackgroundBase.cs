@@ -9,13 +9,28 @@ namespace OnceTwiceThrice
 {
 	public class BackgroundBase
 	{
-		public Image Picture { get; private set; }
+        private Image _picture;
+		public Image Picture
+        {
+            get => _picture;
+            private set
+            {
+                NeedInvalidate = true;
+                _picture = value;
+            }
+        }
+        public int X { get; }
+        public int Y { get; }
+
 		protected int animationCounter { get; set; }
 		private readonly Image[] slides;
 		private readonly int slidesCount;
+        public bool NeedInvalidate { get; set; }
 
-		public BackgroundBase(string BackgroundName, int SlidesCount)
+		public BackgroundBase(int x, int y, string BackgroundName, int SlidesCount)
 		{
+            X = x;
+            Y = y;
 			slides = new Image[SlidesCount];
 			for (int i = 0; i < SlidesCount; i++)
 				slides[i] = Useful.GetImageByName(BackgroundName + "/" + i);
@@ -26,7 +41,7 @@ namespace OnceTwiceThrice
 
 		protected void ChangeSlide()
 		{
-			animationCounter++;
+            animationCounter++;
 			if (animationCounter == slidesCount - 1)
 				animationCounter = 0;
 			Picture = slides[animationCounter];

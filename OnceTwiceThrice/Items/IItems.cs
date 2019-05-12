@@ -9,5 +9,7 @@ namespace OnceTwiceThrice
 		bool CanStop(MovableBase mob); //Блокирует ли объект команды на движения мобов, находящемся на нем
 		int X { get; }
 		int Y { get; }
-	}
+        void Destroy();
+        bool NeedInvalidate { get; set; }
+    }
 }

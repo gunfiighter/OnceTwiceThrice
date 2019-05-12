@@ -4,7 +4,7 @@ namespace OnceTwiceThrice
 {
     public class IceBackground : BackgroundBase, IBackground
     {
-        public IceBackground(GameModel model) : base("Ice", 1)
+        public IceBackground(GameModel model, int x, int y) : base(x, y, "Ice", 1)
         {
             ;
         }

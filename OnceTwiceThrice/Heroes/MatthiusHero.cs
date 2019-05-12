@@ -70,7 +70,7 @@ namespace OnceTwiceThrice
                 var ItemStack = Model.ItemsMap[X, Y];
 
                 if (ItemStack.Count > 0 && ItemStack.Peek() is ThreeItem)
-                    Model.ItemsMap[X, Y].Pop();
+                    Model.ItemsMap[X, Y].Peek().Destroy();
 
                 foreach (var act in dict)
 					act.Key.OnMoveStart -= act.Value;
