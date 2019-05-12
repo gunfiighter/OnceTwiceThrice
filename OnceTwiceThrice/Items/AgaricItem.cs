@@ -74,8 +74,8 @@ namespace OnceTwiceThrice
 		private void Shoot(GameModel model, int startX, int startY, Keys direction)
 		{
 			var newMob = new SporeMob(model, startX, startY);
-            newMob.GoTo(direction);
 			model.Mobs.AddLast(newMob);
+			newMob.GoTo(direction);
 		}
 
 		public bool CanStep(MovableBase mob) => true;

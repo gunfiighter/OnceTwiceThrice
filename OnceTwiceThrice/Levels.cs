@@ -25,7 +25,7 @@ namespace OnceTwiceThrice
 		public List<Level> Levels;
 		public LevelsList() {
 			Levels = new List<Level>();
-			for (var i = 0; i < 2; i++)
+			for (var i = 0; i < 10; i++)
 				Levels.Add(LevelFromFile("../../Levels/Level" + i + ".txt"));
 		}
 

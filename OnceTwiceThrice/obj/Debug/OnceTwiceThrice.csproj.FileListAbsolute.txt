@@ -34,3 +34,4 @@ C:\Users\Kirom Ekexity\Desktop\Python\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\
 C:\Users\Kirom Ekexity\Desktop\Python\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.exe
 C:\Users\Kirom Ekexity\Desktop\Python\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.pdb
 C:\Users\Kirom Ekexity\Desktop\Python\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.csprojResolveAssemblyReference.cache
+D:\УЧЁБА\ЯТП\OnceTwiceThrice\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.MyForm.resources

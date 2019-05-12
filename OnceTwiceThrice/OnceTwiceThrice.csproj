@@ -58,6 +58,9 @@
     <Compile Include="Heroes\ISpell.cs" />
     <Compile Include="Heroes\SpellBase.cs" />
     <Compile Include="Items\ThreeItem.cs" />
+    <Compile Include="Menu.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Mobs\FrogMob.cs" />
     <Compile Include="Mobs\PenguinMob.cs" />
     <Compile Include="Mobs\SharkMob.cs" />
@@ -84,6 +87,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="MyForm.resx">
+      <DependentUpon>MyForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

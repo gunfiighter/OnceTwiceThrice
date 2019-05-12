@@ -13,8 +13,9 @@ namespace OnceTwiceThrice
     {
         public const int DrawingScope = 60;//размер клетки в px
         private GameModel model;
+		public Form Menu;
 
-        private Func<IMovable, int> GetPaintX = (mob) =>
+		private Func<IMovable, int> GetPaintX = (mob) =>
             (int)Math.Round((mob.X + mob.DX) * DrawingScope);
         private Func<IMovable, int> GetPaintY = (mob) =>
             (int)Math.Round((mob.Y + mob.DY) * DrawingScope);
@@ -135,7 +136,10 @@ namespace OnceTwiceThrice
                                 model.CurrentHero.GazeDirection = Keys.Up; break;
                         }
                         break;
-                }
+					case Keys.Escape:
+						GetOut();
+						break;
+				}
             }
         }
 
@@ -216,21 +220,25 @@ namespace OnceTwiceThrice
             return result;
         }
 
-        private void GameOver()
-        {
-            MessageBox.Show("GameOver");
-            RemoveEvents();
-            Close();
-        }
+		private void GameOver()
+		{
+			MessageBox.Show("GameOver");
+			GetOut();
+		}
 
-        private void Win()
-        {
-            MessageBox.Show("You WIN");
-            RemoveEvents();
-            Close();
-        }
+		private void Win()
+		{
+			MessageBox.Show("You WIN");
+			GetOut();
+		}
 
-        private void RemoveEvents()
+		private void GetOut()
+		{
+			RemoveEvents();
+			Close();
+			Menu.Show();
+		}
+		private void RemoveEvents()
         {
             KeyDown -= KeyDownInGame;
             KeyUp -= KeyUpInGame;
@@ -271,19 +279,27 @@ namespace OnceTwiceThrice
             Invalidate();
         }
 
-        public MyForm()
-        {
-            DoubleBuffered = true;
-            var levels = new LevelsList();
-            CreateMenu();
-            PlayTheGame(levels.Levels[0]);
-        }
+		public MyForm(Form menu, Level level)
+		{
+			Menu = menu;
+			StartPosition = FormStartPosition.CenterScreen;
+			var windowSize = new Size(DrawingScope * 16 + 15, DrawingScope * 12 + 38);
+			MinimumSize = MaximumSize = windowSize;
+			DoubleBuffered = true;
 
-        public void CreateMenu()
-        {
-            MaximizeBox = false;
-            MinimumSize = new Size(DrawingScope * 16 + 15, DrawingScope * 12 + 38);
-            MaximumSize = new Size(DrawingScope * 16 + 15, DrawingScope * 12 + 38);
-        }
-    }
+			PlayTheGame(level);
+		}
+
+
+		private void InitializeComponent()
+		{
+			this.SuspendLayout();
+			// 
+			// MyForm
+			// 
+			this.ClientSize = new System.Drawing.Size(481, 415);
+			this.Name = "MyForm";
+			this.ResumeLayout(false);
+		}
+	}
 }
