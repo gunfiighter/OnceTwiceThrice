@@ -4,7 +4,7 @@ namespace OnceTwiceThrice
 {
 	public class LavaBackground : BackgroundBase, IBackground
 	{
-		public LavaBackground (GameModel model) : base( 4, "Lava")
+		public LavaBackground (GameModel model) : base("Lava", 4)
 		{
 			model.OnTick += () =>
 			{

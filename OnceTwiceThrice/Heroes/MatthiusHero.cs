@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OnceTwiceThrice
 {
@@ -36,25 +37,42 @@ namespace OnceTwiceThrice
 		public MatthiusSpell(IHero hero, int X, int Y, string imageFile) : base(hero, X, Y, imageFile)
 		{
             var dict = new Dictionary<IMob, Action>();
-			foreach (var mob in Model.Mobs)
-                if (mob.Explodable)
-			    {
-				    dict.Add(mob, () =>
-				    {
-					    if ((mob.MX == X && mob.MY == Y) || (mob.X == X && mob.Y == Y))
-						    mob.Destroy();
-				    });
-				    mob.OnMoveStart += dict[mob];
-			    }
-
-            var ItemStack = Model.ItemsMap[X, Y];
-
-            if (ItemStack.Count > 0 && ItemStack.Peek() is ThreeItem)
-                Model.ItemsMap[X, Y].Pop();
-
-			OnDestroy += () =>
+            var willDie = new List<IMob>();
+			foreach (var mob in Model.Mobs.Where(mob => mob.DestroyByMatthiusSpell))
 			{
-				foreach (var act in dict)
+                if (Useful.CheckTouch(mob, X, Y))
+                {
+                    willDie.Add(mob);
+                    continue;
+                }
+				dict.Add(mob, () =>
+				{
+					if (mob.MX == X && mob.MY == Y)
+						mob.Destroy();
+				});
+				mob.OnMoveStart += dict[mob];
+			}
+
+            foreach (var mob in willDie)
+                mob.Destroy();
+
+            foreach (var mob in Model.Mobs.Where(mob => Math.Abs(mob.X - X) <= 1 && Math.Abs(mob.Y - Y) <= 1))
+            {
+                if (mob is PenguinMob && !mob.CurrentAnimation.IsMoving)
+                {
+                    MoveInOppositeDirection(this, mob);
+                    break;
+                }
+            }
+
+            OnDestroy += () =>
+			{
+                var ItemStack = Model.ItemsMap[X, Y];
+
+                if (ItemStack.Count > 0 && ItemStack.Peek() is ThreeItem)
+                    Model.ItemsMap[X, Y].Pop();
+
+                foreach (var act in dict)
 					act.Key.OnMoveStart -= act.Value;
 			};
 		}

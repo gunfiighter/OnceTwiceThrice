@@ -34,7 +34,13 @@ namespace OnceTwiceThrice
 			}
 		}
 
-
+        public void GoTo(Keys direction)
+        {
+            KeyMap.TurnOff();
+            KeyMap.TurnOn(direction);
+            MakeMove(direction);
+        }
+        
 		public override double Speed
 		{
 			get { return 0.033; }

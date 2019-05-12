@@ -14,7 +14,7 @@ namespace OnceTwiceThrice
 		private readonly Image[] slides;
 		private readonly int slidesCount;
 
-		public BackgroundBase(int SlidesCount, string BackgroundName)
+		public BackgroundBase(string BackgroundName, int SlidesCount)
 		{
 			slides = new Image[SlidesCount];
 			for (int i = 0; i < SlidesCount; i++)

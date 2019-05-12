@@ -37,7 +37,7 @@ namespace OnceTwiceThrice
                     var stack = Model.ItemsMap[X, Y];
 
                     if (stack.Count == 0)// || stack.Peek() is StoneItem)
-						stack.Push(new ThreeItem(X, Y));
+						stack.Push(new ThreeItem(Model, X, Y));
                 }
             };
         }

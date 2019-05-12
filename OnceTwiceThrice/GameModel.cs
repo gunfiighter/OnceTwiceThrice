@@ -28,11 +28,11 @@ namespace OnceTwiceThrice
 			background.Add('B', new BurnedBackground(model));
 			background.Add('W', new WaterBackground(model));
 			background.Add('L', new LavaBackground(model));
-//			background.Add('I', Background.Ice);
+			background.Add('I', new IceBackground(model));
 			
 			item = new Dictionary<char, Func<int, int, IItems>>();
-			item.Add('S', (x, y) => new StoneItem(x, y));
-			item.Add('T', (x, y) => new ThreeItem(x, y));
+			item.Add('S', (x, y) => new StoneItem(model, x, y));
+			item.Add('T', (x, y) => new ThreeItem(model, x, y));
 			item.Add('F', (x, y) => new FireItem(model, x, y));
 			item.Add('D', (x, y) => new DestinationItem(model, x, y));
 			item.Add('A', (x, y) => new AgaricItem(model, x, y));
@@ -43,8 +43,10 @@ namespace OnceTwiceThrice
             hero.Add('H', (map, x, y) => new HowardHero(map, x, y));
 
 			hero.Add('r', (map, x, y) => new RedGolemMob(map, x, y));
-			hero.Add('s', (map, x, y) => new SharkMob(map, x, y));
-		}
+            hero.Add('s', (map, x, y) => new SharkMob(map, x, y));
+            hero.Add('f', (map, x, y) => new FrogMob(map, x, y));
+            hero.Add('p', (map, x, y) => new PenguinMob(map, x, y));
+        }
 	} 
 	
 	public class GameModel
@@ -57,6 +59,7 @@ namespace OnceTwiceThrice
 		
 		public IBackground[,] BackMap;
 		public Stack<IItems>[,] ItemsMap;
+        public LinkedList<IMovable>[,] MobMap;
 		public LinkedList<IHero> Heroes;
 		public LinkedList<IMob> Mobs;
 		public LinkedList<ISpell> Spells;
@@ -97,13 +100,19 @@ namespace OnceTwiceThrice
 			
 			BackMap = new IBackground[Width, Height];
 			ItemsMap = new Stack<IItems>[Width, Height];
-			ItemsMap.Foreach((x, y) =>
-			{
-				ItemsMap[x, y] = new Stack<IItems>();
-			});
-			Heroes = new LinkedList<IHero>();
+            MobMap = new LinkedList<IMovable>[Width, Height];
+            ItemsMap.Foreach((x, y) =>
+            {
+                ItemsMap[x, y] = new Stack<IItems>();
+            });
+            MobMap.Foreach((x, y) =>
+            {
+                MobMap[x, y] = new LinkedList<IMovable>();
+            });
+            Heroes = new LinkedList<IHero>();
 			Mobs = new LinkedList<IMob>();
 			Spells = new LinkedList<ISpell>();
+            
 			
 			var mapDecoder = new MapDecoder(this);
 			
@@ -154,31 +163,6 @@ namespace OnceTwiceThrice
 			
 			return
 				IsInsideMap(newX, newY);
-		}
-
-		public void DrawBackground(Graphics g)
-		{
-			BackMap.Foreach((x, y) =>
-			{
-				g.DrawImage(
-					BackMap[x, y].Picture, 
-					x * MyForm.DrawingScope, 
-					y * MyForm.DrawingScope);
-			});
-		}
-
-		public void DrawItems(Graphics g)
-		{
-			ItemsMap.Foreach((x, y) =>
-			{
-				foreach (var item in ItemsMap[x, y])
-				{
-					g.DrawImage(
-                        item.Picture,
-                        x * MyForm.DrawingScope,
-                        y * MyForm.DrawingScope);
-				}
-			});
 		}
 
 		public void SwitchHero()

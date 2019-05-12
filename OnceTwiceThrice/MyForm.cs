@@ -10,7 +10,7 @@ namespace OnceTwiceThrice
 {
 	public class MyForm : Form
 	{
-		public const int DrawingScope = 80;//размер клетки в px
+		public const int DrawingScope = 60;//размер клетки в px
 		private GameModel model;
 		
 		private Func<IMovable, int> GetPaintX = (mob) =>
@@ -20,21 +20,43 @@ namespace OnceTwiceThrice
 
 		private Timer timer;
 
+        private Rectangle[,] RectangleMap;
+
 		private void PaintGameState(object sender, PaintEventArgs args)
 		{
 			var g = args.Graphics;
-			//Отрисовка фона
-			model.DrawBackground(g);
-				
-			//Отрисовка предметов
-			model.DrawItems(g);
+            //Отрисовка фона
+            model.BackMap.Foreach((x, y) =>
+            {
+                g.DrawImage(
+                    model.BackMap[x, y].Picture,
+                    x * DrawingScope,
+                    y * DrawingScope,
+                    DrawingScope,
+                    DrawingScope);
+            });
 
-			foreach (var spell in model.Spells)
+            //Отрисовка предметов
+            model.ItemsMap.Foreach((x, y) =>
+            {
+                Useful.ForeachReverse(model.ItemsMap[x, y], (item) =>
+                {
+                    g.DrawImage(
+                        item.Picture,
+                        item.X * DrawingScope,
+                        item.Y * DrawingScope,
+                        DrawingScope,
+                        DrawingScope);
+                });
+            });
+
+            foreach (var spell in model.Spells)
 			{
 				g.DrawImage(spell.Picture,
-					new Point(
 						spell.X * DrawingScope, 
-						spell.Y * DrawingScope));
+						spell.Y * DrawingScope,
+                        DrawingScope,
+                        DrawingScope);
 			}
 
 			//Обводка героя
@@ -48,16 +70,25 @@ namespace OnceTwiceThrice
 			foreach (var hero in model.Heroes)
 			{
 				g.DrawImage(hero.Image,
-					new Point(GetPaintX(hero), GetPaintY(hero)));
+				    GetPaintX(hero),
+                    GetPaintY(hero),
+                    DrawingScope,
+                    DrawingScope);
 			}
 				
 			//Отрисовка мобов
 			foreach (var mob in model.Mobs)
 			{
 				g.DrawImage(mob.Image,
-					new Point(GetPaintX(mob), GetPaintY(mob)));
+					GetPaintX(mob),
+                    GetPaintY(mob),
+                    DrawingScope,
+                    DrawingScope);
 			}
-		}
+
+            //g.DrawImage(model.CurrentHero.Image, new Rectangle(new Point(200, 200), new Size(50, 50)));
+            //g.DrawImage(model.CurrentHero.Image, 100, 200, 100, 200);
+        }
 
 		private void KeyDownInGame(object sender, KeyEventArgs args)
 		{
@@ -110,7 +141,8 @@ namespace OnceTwiceThrice
 		private void TickInGame(object sender, EventArgs args)
 		{
 			model.Tick();
-			Invalidate();
+            if (model.TickCount % 3 == 0)
+			    Invalidate();
 		}
 
 		private void GameOver()
@@ -140,7 +172,7 @@ namespace OnceTwiceThrice
 			timer = new Timer(){Interval = 10};
 			
 			model = new GameModel(lavel);
-			Width = model.Width * DrawingScope + 10;
+			Width = model.Width * DrawingScope + 50;
 			Height = model.Height * DrawingScope + 50;
 			
 			KeyDown += KeyDownInGame;
@@ -159,7 +191,7 @@ namespace OnceTwiceThrice
 		{
 			DoubleBuffered = true;
 			var levels = new LevelsList();
-			PlayTheGame(levels.Levels[1]);
+			PlayTheGame(levels.Levels[0]);
 		}
 	}
 }

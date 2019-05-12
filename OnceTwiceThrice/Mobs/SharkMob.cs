@@ -15,6 +15,6 @@ namespace OnceTwiceThrice
 
 		public override sbyte SlidesCount => 4;
 		public override int SlideLatency => 15;
-		public override bool Explodable => false;
+		public override bool DestroyByMatthiusSpell => false;
 	}
 }

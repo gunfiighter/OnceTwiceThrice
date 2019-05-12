@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace OnceTwiceThrice
 {
@@ -53,14 +54,14 @@ namespace OnceTwiceThrice
 			Hero.Image = CastSlides[0];
 		}
 
-		private void ChangeSlide()
-		{
-			if(SlideCounter < SlidesCount)
-				Picture = Slides[SlideCounter++];
-			//if (SlideCounter == 8)
-			//	Hero.UnlockKeyMap();
-		}
-
+        private void ChangeSlide()
+        {
+            if (SlideCounter < SlidesCount)
+                Picture = Slides[SlideCounter++];
+            //if (SlideCounter == 8)
+            //	Hero.UnlockKeyMap();
+        }
+        
         private void onTick()
         {
 			if ((Model.TickCount - StartTime) == 10)
@@ -83,5 +84,26 @@ namespace OnceTwiceThrice
 				Model.OnTick -= onTick;
             }
         }
-	}
+
+        public static void MoveInOppositeDirection(ISpell spell, IMob mob)
+        {
+            if (!(Math.Abs(mob.X - spell.X) == 1 ^ Math.Abs(mob.Y - spell.Y) == 1) ||
+                !(Math.Abs(mob.X - spell.X) == 0 ^ Math.Abs(mob.Y - spell.Y) == 0))
+                return;
+            if (Math.Abs(mob.X - spell.X) == 1)
+            {
+                switch (mob.X - spell.X)
+                {
+                    case 1: mob.GoTo(Keys.Right); break;
+                    case -1: mob.GoTo(Keys.Left); break;
+                }
+                return;
+            }
+            switch (mob.Y - spell.Y)
+            {
+                case 1: mob.GoTo(Keys.Down); break;
+                case -1: mob.GoTo(Keys.Up); break;
+            }
+        }
+    }
 }

@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backgrounds\BackgroundBase.cs" />
+    <Compile Include="Backgrounds\IceBackground.cs" />
     <Compile Include="Backgrounds\LavaBackgrounds.cs" />
     <Compile Include="Backgrounds\BurnedBackground.cs" />
     <Compile Include="Backgrounds\GrassBackground.cs" />
@@ -57,6 +58,8 @@
     <Compile Include="Heroes\ISpell.cs" />
     <Compile Include="Heroes\SpellBase.cs" />
     <Compile Include="Items\ThreeItem.cs" />
+    <Compile Include="Mobs\FrogMob.cs" />
+    <Compile Include="Mobs\PenguinMob.cs" />
     <Compile Include="Mobs\SharkMob.cs" />
     <Compile Include="Useful.cs" />
     <Compile Include="Heroes\HeroBase.cs" />
@@ -102,6 +105,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Levels\Level0.txt" />
+    <Content Include="Levels\Level1.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

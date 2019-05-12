@@ -4,7 +4,7 @@ namespace OnceTwiceThrice
 {
     public class ThreeItem : ItemBase, IItems
     {
-        public ThreeItem(int x, int y) : base(x, y, 1, "Three")
+        public ThreeItem(GameModel model, int x, int y) : base(model, x, y, 1, "Three")
         {
             ;
         }

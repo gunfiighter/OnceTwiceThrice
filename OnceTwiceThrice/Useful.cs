@@ -64,5 +64,20 @@ namespace OnceTwiceThrice
 				result[i - begin] = array[i];
 			return result;
 		}
+
+        public static void ForeachReverse(Stack<IItems> stack, Action<IItems> act)
+        {
+            var list = new List<IItems>();
+            foreach(var e in stack)
+                list.Add(e);
+            for (var i = list.Count - 1; i >= 0; i--)
+                act(list[i]);
+        }
+
+        public static bool CheckTouch(IMovable mob, int x, int y)
+        {
+            return (mob.X == x && mob.Y == y) ||
+                    (mob.MX == x && mob.MY == y);
+        }
 	}
 }

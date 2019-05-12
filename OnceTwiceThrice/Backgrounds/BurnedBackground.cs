@@ -4,7 +4,7 @@ namespace OnceTwiceThrice
 {
 	public class BurnedBackground : BackgroundBase, IBackground
 	{
-		public BurnedBackground(GameModel model) : base(1, "Burned")
+		public BurnedBackground(GameModel model) : base("Burned", 1)
 		{
 			;
 		}

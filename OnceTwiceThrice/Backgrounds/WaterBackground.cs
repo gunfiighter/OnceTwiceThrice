@@ -4,7 +4,7 @@ namespace OnceTwiceThrice
 {
 	public class WaterBackground : BackgroundBase, IBackground
 	{
-		public WaterBackground(GameModel model) : base(4, "Water")
+		public WaterBackground(GameModel model) : base("Water", 4)
 		{
 			model.OnTick += () =>
 			{

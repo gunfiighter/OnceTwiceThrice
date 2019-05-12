@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -30,10 +31,56 @@ namespace OnceTwiceThrice
     {
         public SkimletSpell(IHero hero, int X, int Y, string ImageFile) : base(hero, X, Y, ImageFile)
         {
-            var ItemStack = Model.ItemsMap[X, Y];
+            var dict = new Dictionary<IMob, Action>();
+            var willDie = new List<IMob>();
+            foreach (var mob in 
+                Model.Mobs
+                .Where(mob => mob.DestroyBySkimletSpell))
+            {
+                if (Useful.CheckTouch(mob, X, Y))
+                {
+                    willDie.Add(mob);
+                    continue;
+                }
+                dict.Add(mob, () =>
+                {
+                    if (mob.MX == X && mob.MY == Y)
+                        mob.Destroy();
+                });
+                mob.OnMoveStart += dict[mob];
+            }
 
-            if (ItemStack.Count > 0 && ItemStack.Peek() is FireItem)
-                Model.ItemsMap[X, Y].Pop();
+            foreach (var mob in willDie)
+                mob.Destroy();
+
+            foreach (var mob in Model.Mobs.Where(mob => Math.Abs(mob.X - X) <= 1 && Math.Abs(mob.Y - Y) <= 1))
+            {
+                if (mob is FrogMob && !mob.CurrentAnimation.IsMoving)
+                {
+                    MoveInOppositeDirection(this, mob);
+                    break;
+                }
+                //if (mob is CactusMob)
+                //{
+                //    RuleForCactusMob(mob);
+                //    break;
+                //}
+            }
+            OnDestroy += () =>
+            {
+                var ItemStack = Model.ItemsMap[X, Y];
+
+                if (ItemStack.Count > 0 && ItemStack.Peek() is FireItem)
+                    Model.ItemsMap[X, Y].Pop();
+
+                foreach (var act in dict)
+                    act.Key.OnMoveStart -= act.Value;
+            };
+        }
+
+        private void RuleForCactusMob(IMob mob)
+        {
+            throw new NotImplementedException();
         }
     };
 }

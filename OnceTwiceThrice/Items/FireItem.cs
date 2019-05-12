@@ -4,7 +4,7 @@ namespace OnceTwiceThrice
 {
 	public class FireItem : ItemBase, IItems
 	{
-		public FireItem(GameModel model,int x, int y) : base(x, y, 4, "Fire")
+		public FireItem(GameModel model,int x, int y) : base(model, x, y, 4, "Fire")
 		{
 			model.OnTick += () =>
 			{

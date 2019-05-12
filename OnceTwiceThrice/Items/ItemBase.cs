@@ -2,18 +2,20 @@ using System.Drawing;
 
 namespace OnceTwiceThrice
 {
-	public class ItemBase
-	{
-		public int X { get; }
-		public int Y { get; }
-		public Image Picture { get; private set; }
+    public class ItemBase
+    {
+        public int X { get; }
+        public int Y { get; }
+        public Image Picture { get; private set; }
+        public GameModel Model { get; }
 		protected int animationCounter { get; set; }
 		private sbyte animationMove = 1;
 		private readonly Image[] slides;
 		private readonly int slidesCount;
 
-		public ItemBase(int x, int y, int SlidesCount, string mobName)
+		public ItemBase(GameModel model, int x, int y, int SlidesCount, string mobName)
 		{
+            this.Model = model;
 			this.X = x;
 			this.Y = y;
 			slides = new Image[SlidesCount];

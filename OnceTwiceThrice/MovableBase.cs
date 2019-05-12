@@ -37,7 +37,8 @@ namespace OnceTwiceThrice
 		double DY { get; }
 
         event Action OnMoveStart;
-        bool Explodable { get; }
+        bool DestroyByMatthiusSpell { get; }
+        bool DestroyBySkimletSpell { get; }
         Animation CurrentAnimation { get; }
         Keys GazeDirection { get; set; }
         void LockKeyMap();
@@ -136,21 +137,15 @@ namespace OnceTwiceThrice
 			CurrentAnimation = new Animation();
 			CurrentAnimation.Direction = Keys.Down;
 
-			OnStop += () =>
-			{
-                if (!KeyMap.Enable)
-                    return;
-				if (KeyMap[CurrentAnimation.Direction] &&
-				    Model.IsInsideMap(x, y, CurrentAnimation.Direction))
-				{
-					MakeMove(CurrentAnimation.Direction);
-					return;
-				}
+            model.MobMap[X, Y].AddLast(this);
 
-				var nextDirection = KeyMap.GetAnyOnDirection();
-				if (nextDirection != Keys.None)
-					MakeMove(nextDirection);
-			};
+            OnMoveStart += () =>
+            {
+                model.MobMap[X, Y].Remove(this);
+                model.MobMap[MX, MY].AddLast(this);
+            };
+
+            OnStop += ForStop;
 
 			model.OnTick += MakeAnimation;
 			OnDestroy += () =>
@@ -270,8 +265,25 @@ namespace OnceTwiceThrice
 		public bool CanMoveOn(IItems item) => item.CanStep(this) || CanStep(item);
 		public bool CanMoveOn(IBackground background) => background.CanStep(this) || CanStep(background);
 
+        public virtual void ForStop()
+        {
+            if (!KeyMap.Enable)
+                return;
+            if (KeyMap[CurrentAnimation.Direction] &&
+                Model.IsInsideMap(X, X, CurrentAnimation.Direction))
+            {
+                MakeMove(CurrentAnimation.Direction);
+                return;
+            }
+
+            var nextDirection = KeyMap.GetAnyOnDirection();
+            if (nextDirection != Keys.None)
+                MakeMove(nextDirection);
+        }
+
 		public virtual bool CanStep(IItems item) => false;
 		public virtual bool CanStep(IBackground background) => false;
-        public virtual bool Explodable => true;
-	}
+        public virtual bool DestroyByMatthiusSpell => true;
+        public virtual bool DestroyBySkimletSpell => false;
+    }
 }
