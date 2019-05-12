@@ -152,6 +152,7 @@ namespace OnceTwiceThrice
             {
                 model.MobMap[X, Y].Remove(this);
                 model.MobMap[MX, MY].AddLast(this);
+				model.MobMapChange(this);
             };
 
             OnStop += ForStop;
@@ -162,17 +163,22 @@ namespace OnceTwiceThrice
 
 				if (this is IMob)
 				{
+
 					model.OnTick -= MakeAnimation;
 					model.Mobs.Remove(this as IMob);
+					model.MobMap[MX, MY].Remove(this);
 				}
 
 				if (this is IHero)
 				{
 					model.OnTick -= MakeAnimation;
 					model.Heroes.Remove(this as IHero);
+					model.MobMap[MX, MY].Remove(this);
 				}
-                model.NeedInvalidate = true;
+				model.Deaths.AddLast(new Death(model, X, Y));
+				model.NeedInvalidate = true;
 			};
+
 		}
 
 		public void MakeMove(Keys key)

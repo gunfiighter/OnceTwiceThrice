@@ -53,6 +53,7 @@
     <Compile Include="Backgrounds\GrassBackground.cs" />
     <Compile Include="Backgrounds\IBackground.cs" />
     <Compile Include="Backgrounds\WaterBackground.cs" />
+    <Compile Include="Death.cs" />
     <Compile Include="GameModel.cs" />
     <Compile Include="Heroes\HowardHero.cs" />
     <Compile Include="Heroes\ISpell.cs" />
@@ -61,6 +62,8 @@
     <Compile Include="Menu.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Mobs\BlueGolem.cs" />
+    <Compile Include="Mobs\Dino.cs" />
     <Compile Include="Mobs\FrogMob.cs" />
     <Compile Include="Mobs\PenguinMob.cs" />
     <Compile Include="Mobs\SharkMob.cs" />

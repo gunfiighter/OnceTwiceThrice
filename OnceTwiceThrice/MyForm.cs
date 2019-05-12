@@ -52,16 +52,6 @@ namespace OnceTwiceThrice
                         DrawingScope);
                 });
             });
-
-            foreach (var spell in model.Spells)
-            {
-                g.DrawImage(spell.Picture,
-                        spell.X * DrawingScope,
-                        spell.Y * DrawingScope,
-                        DrawingScope,
-                        DrawingScope);
-            }
-
             //Обводка героя
             g.DrawRectangle(new Pen(Color.Gold, 2),
                 GetPaintX(model.CurrentHero),
@@ -89,7 +79,27 @@ namespace OnceTwiceThrice
                     DrawingScope);
             }
 
-            g.DrawString(perfomance, new Font("Arial", 10, FontStyle.Regular), Brushes.Black, FPSRectangle);
+			//Отрисовка магии
+			foreach (var spell in model.Spells)
+			{
+				g.DrawImage(spell.Picture,
+						spell.X * DrawingScope,
+						spell.Y * DrawingScope,
+						DrawingScope,
+						DrawingScope);
+			}
+
+			//Отрисовка смертей
+			foreach (var death in model.Deaths)
+			{
+				g.DrawImage(death.Picture,
+						death.X * DrawingScope,
+						death.Y * DrawingScope,
+						DrawingScope,
+						DrawingScope);
+			}
+
+			g.DrawString(perfomance, new Font("Arial", 10, FontStyle.Regular), Brushes.Black, FPSRectangle);
 
             //g.DrawImage(model.CurrentHero.Image, new Rectangle(new Point(200, 200), new Size(50, 50)));
             //g.DrawImage(model.CurrentHero.Image, 100, 200, 100, 200);
@@ -211,11 +221,21 @@ namespace OnceTwiceThrice
                 GetPaintY(hero) - borderWidth,
                 DrawingScope + borderWidth * 2, DrawingScope + borderWidth * 2));
             }
-            foreach (var spell in model.Spells)
-                if (spell.NeedInvalidate)
-                    result.Union(regions[spell.X, spell.Y]);
+			foreach (var spell in model.Spells)
+				if (spell.NeedInvalidate)
+				{
+					result.Union(regions[spell.X, spell.Y]);
+					spell.NeedInvalidate = false;
+				}
 
-            result.Union(regions[model.CurrentHero.X, model.CurrentHero.Y]);
+			foreach (var death in model.Deaths)
+				if (death.NeedInvalidate)
+				{
+					result.Union(regions[death.X, death.Y]);
+					death.NeedInvalidate = false;
+				}
+
+			result.Union(regions[model.CurrentHero.X, model.CurrentHero.Y]);
             result.Union(FPSRectangle);
             return result;
         }

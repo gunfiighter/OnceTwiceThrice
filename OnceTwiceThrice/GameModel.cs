@@ -43,10 +43,12 @@ namespace OnceTwiceThrice
             hero.Add('H', (map, x, y) => new HowardHero(map, x, y));
 
 			hero.Add('r', (map, x, y) => new RedGolemMob(map, x, y));
-            hero.Add('s', (map, x, y) => new SharkMob(map, x, y));
+			hero.Add('b', (map, x, y) => new BlueGolemMob(map, x, y));
+			hero.Add('s', (map, x, y) => new SharkMob(map, x, y));
             hero.Add('f', (map, x, y) => new FrogMob(map, x, y));
-            hero.Add('p', (map, x, y) => new PenguinMob(map, x, y));
-        }
+			hero.Add('p', (map, x, y) => new PenguinMob(map, x, y));
+			hero.Add('d', (map, x, y) => new DinoMob(map, x, y));
+		}
 	} 
 	
 	public class GameModel
@@ -65,9 +67,11 @@ namespace OnceTwiceThrice
 		public LinkedList<IHero> Heroes;
 		public LinkedList<IMob> Mobs;
 		public LinkedList<ISpell> Spells;
+		public LinkedList<Death> Deaths;
 
 		public event Action OnWin;
 		public event Action OnGameOver;
+		public event Action<IMovable> OnMobMapChange;
 		public event Action OnTick;
 
 		public void GameOver(object sender)
@@ -94,7 +98,12 @@ namespace OnceTwiceThrice
 			OnTick?.Invoke();
 			
 		}
-		
+
+		public void MobMapChange(IMovable mob)
+		{
+			OnMobMapChange?.Invoke(mob);
+		}
+
 		public GameModel(Level lavel)
 		{
 			Width = lavel.Background[0].Length;
@@ -114,8 +123,9 @@ namespace OnceTwiceThrice
             Heroes = new LinkedList<IHero>();
 			Mobs = new LinkedList<IMob>();
 			Spells = new LinkedList<ISpell>();
-            
-			
+			Deaths = new LinkedList<Death>();
+
+
 			var mapDecoder = new MapDecoder(this);
 			
 			//Заполнение фона
