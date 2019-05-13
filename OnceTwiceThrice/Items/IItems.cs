@@ -1,8 +1,9 @@
+using System;
 using System.Drawing;
 
 namespace OnceTwiceThrice
 {
-	public interface IItems
+	public interface IItem
 	{
 		Image Picture { get; }
 		bool CanStep(MovableBase mob);//Можно ли наступить на объект
@@ -10,6 +11,8 @@ namespace OnceTwiceThrice
 		int X { get; }
 		int Y { get; }
         void Destroy();
+        event Action<IMovable> OnStep;
+        void Step(IMovable mob);
         bool NeedInvalidate { get; set; }
     }
 }

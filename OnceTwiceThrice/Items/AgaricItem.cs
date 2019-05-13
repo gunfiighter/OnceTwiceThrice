@@ -5,26 +5,29 @@ using System.Windows.Forms;
 
 namespace OnceTwiceThrice
 {
-	public class AgaricItem : ItemBase, IItems
+	public class AgaricItem : ItemBase, IItem
 	{
         private Keys lastDirection;
 		public AgaricItem(GameModel model, int x, int y) : base(model, x, y, 4, "Agaric")
 		{
             lastDirection = Keys.Up;
-			model.OnTick += () =>
-			{
-				if (model.TickCount % 10 == 0) {
-					this.ChangeSlide();
-                    if (this.animationCounter == 3)
-                    {
-                        if (!checkDirection(lastDirection))
-                            lastDirection = findTarget();
-                        if (Useful.KeyIsMove(lastDirection))
-                            Shoot(model, x, y, lastDirection);
-                    }
-				}
-			};
+            model.OnTick += onTick;
 		}
+
+        public override void onTick()
+        {
+            if (Model.TickCount % 10 == 0)
+            {
+                this.ChangeSlide();
+                if (this.animationCounter == 3)
+                {
+                    if (!checkDirection(lastDirection))
+                        lastDirection = findTarget();
+                    if (Useful.KeyIsMove(lastDirection))
+                        Shoot(Model, X, Y, lastDirection);
+                }
+            }
+        }
 
         private bool checkDirection(Keys key)
         {

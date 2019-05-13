@@ -53,7 +53,9 @@ namespace OnceTwiceThrice
 			}
 		}
 
-		public override double Speed
+        public override bool IceSlip => true;
+
+        public override double Speed
 		{
 			get { return 0.05; }
 		}

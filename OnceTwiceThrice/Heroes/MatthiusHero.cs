@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace OnceTwiceThrice
 {
@@ -12,7 +13,7 @@ namespace OnceTwiceThrice
 			;
 		}
 
-		public override bool CanStep(IItems item)
+		public override bool CanStep(IItem item)
 		{
 			if (item is FireItem)
 				return true;
@@ -60,7 +61,9 @@ namespace OnceTwiceThrice
             {
                 if (mob is PenguinMob && !mob.CurrentAnimation.IsMoving)
                 {
-                    MoveInOppositeDirection(this, mob);
+                    var direction = GetOppositeDirection(this, mob);
+                    if (direction != Keys.None)
+                        mob.GoTo(direction);
                     break;
                 }
             }

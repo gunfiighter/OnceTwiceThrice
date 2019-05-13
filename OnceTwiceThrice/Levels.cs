@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Linq;
 //using StringMap = System.Collections.Generic.List<string>;
 
@@ -9,14 +10,19 @@ namespace OnceTwiceThrice
 	public class Level
 	{
 		public string[] Background;
-		public string[] Items;
+		public List<string[]> Items;
 		public string[] Mobs;
+        public List<int[]> Switchers;
 
-		public Level(string[] background, string[] items, string[] mobs)
+		public Level(string[] background, List<string[]> items, string[] mobs, string[] additionally)
 		{
 			Background = background;
 			Items = items;
 			Mobs = mobs;
+
+            Switchers = new List<int[]>();
+            foreach (var line in additionally)
+                Switchers.Add(line.Split().Select(c => int.Parse(c)).ToArray());
 		}
 	}
 	
@@ -32,13 +38,38 @@ namespace OnceTwiceThrice
 		public Level LevelFromFile(string file)
 		{
 			var t = File.ReadAllText(file).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-			var third = t.Length / 3;
+            var size = t[0].Split();
+            var width = int.Parse(size[0]);
+            var height = int.Parse(size[1]);
+
+            
+
+            var backIndex = findStr(t, "//back") + 1;
+
+            var itemList = new List<string[]>();
+            for (int i = 0; i < t.Length; i++)
+                if (t[i] == "//item")
+                    itemList.Add(Useful.CutArray(t, i + 1, i + height));
+
+            var mobIndex = findStr(t, "//mob") + 1;
+
+            var switcherIndex = findStr(t, "//switcher") + 1;
+
 			return new Level(
-				Useful.CutArray(t, 0, third - 1),
-				Useful.CutArray(t, third, third * 2 - 1),
-				Useful.CutArray(t, third * 2, third * 3 - 1)
+				Useful.CutArray(t, backIndex, backIndex + height - 1),
+				itemList,
+				Useful.CutArray(t, mobIndex, mobIndex + height - 1),
+                Useful.CutArray(t, switcherIndex, t.Length - 1)
 			);
 		}
+
+        private int findStr(string[] t, string str)
+        {
+            var result = 0;
+            while (result < t.Length && t[result] != str)
+                result++;
+            return result;
+        }
 	}
 
 	public static class StringMapExtension

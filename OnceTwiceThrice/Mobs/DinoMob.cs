@@ -10,15 +10,7 @@ namespace OnceTwiceThrice
 
 		public DinoMob(GameModel model, int x, int y) : base(model, ImagePath, x, y)
 		{
-			OnMoveStart += () =>
-			{
-				var newX = X;
-				var newY = Y;
-				Useful.XyPlusKeys(newX, newY, GazeDirection, ref newX, ref newY);
-				var willDie = Model.MobMap[newX, newY].Where(mob => mob != this).ToArray();
-				for(var i = 0; i < willDie.Length; i++)
-					willDie[i].Destroy();
-			};
+			OnMoveStart += base.ForMoveStart;
 
 			model.OnMobMapChange += (mob) =>
 			{
@@ -83,8 +75,24 @@ namespace OnceTwiceThrice
 		}
 
 		public override void ForStop() { }
-
-		public override double Speed => 0.02;
-		public override bool DestroyByMatthiusSpell => false;
-	}
+        public override void ForMoveStart()
+        {
+            var newX = X;
+            var newY = Y;
+            Useful.XyPlusKeys(newX, newY, GazeDirection, ref newX, ref newY);
+            var willDie = Model.MobMap[newX, newY].Where(mob => mob != this && !(mob is SporeMob)).ToArray();
+            for (var i = 0; i < willDie.Length; i++)
+                willDie[i].Destroy();
+        }
+        public override bool CanStep(IItem item)
+        {
+            if (item is ThreeItem)
+                return true;
+            return base.CanStep(item);
+        }
+        public override bool StandingAnimation => true;
+        public override double Speed => 0.02;
+        public override sbyte SlidesCount => 4;
+        public override int SlideLatency => 13;
+    }
 }

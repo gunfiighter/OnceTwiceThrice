@@ -10,6 +10,11 @@ namespace OnceTwiceThrice
 
         public FrogMob(GameModel model, int x, int y) : base(model, ImagePath, x, y)
         {
+            Action IceToWater = () =>
+            {
+                if (Model.BackMap[X, Y] is IceBackground)
+                    Model.BackMap[X, Y] = new WaterBackground(Model, X, Y);
+            };
             OnMoveStart += () =>
             {
                 if (Model.BackMap[X, Y] is WaterBackground ||
@@ -19,20 +24,14 @@ namespace OnceTwiceThrice
                     return;
                 }
 
-                if (Model.BackMap[X, Y] is IceBackground)
-                    Model.BackMap[X, Y] = new WaterBackground(Model, X, Y);
+                IceToWater();
             };
 
             OnCantMove += (key) =>
             {
-                var newDirection = key;
-                switch (key)
-                {
-                    case Keys.Up: newDirection = Keys.Down; break;
-                    case Keys.Down: newDirection = Keys.Up; break;
-                    case Keys.Right: newDirection = Keys.Left; break;
-                    case Keys.Left: newDirection = Keys.Right; break;
-                }
+                IceToWater();
+
+                var newDirection = Useful.ReverseDirection(key);
                 GoTo(newDirection);
             };
 
@@ -43,12 +42,14 @@ namespace OnceTwiceThrice
         {
             foreach (var spell in Model.Spells.Where(spell => spell is SkimletSpell && Math.Abs(spell.X - X) <= 1 && Math.Abs(spell.Y - Y) <= 1))
             {
-                SpellBase.MoveInOppositeDirection(spell, this);
+                var direction = SpellBase.GetOppositeDirection(spell, this);
+                if (direction != Keys.None)
+                    GoTo(direction);
             }
         }
 
         public override bool CanStep(IBackground background) => true;
-        public override bool CanStep(IItems item)
+        public override bool CanStep(IItem item)
         {
             if (item is FireItem)
                 return true;

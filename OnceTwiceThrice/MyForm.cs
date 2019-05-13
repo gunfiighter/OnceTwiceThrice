@@ -111,45 +111,45 @@ namespace OnceTwiceThrice
         {
             var keyCode = args.KeyCode;
 
+            switch (keyCode)
+            {
+                case Keys.Tab:
+                    model.CurrentHero.KeyMap.TurnOff();
+                    model.SwitchHero();
+                    break;
+                case Keys.Escape:
+                    GetOut();
+                    break;
+                case Keys.Space:
+                    if (!model.CurrentHero.KeyMap.Enable)
+                        break;
+                    if (model.CurrentHero.KeyMap.GetAnyOnDirection() == Keys.None &&
+                        !model.CurrentHero.CurrentAnimation.IsMoving)
+                        model.CurrentHero.CreateSpell();
+                    break;
+                case Keys.ControlKey:
+                    switch (model.CurrentHero.GazeDirection)
+                    {
+                        case Keys.Up:
+                            model.CurrentHero.GazeDirection = Keys.Right;
+
+                            break;
+                        case Keys.Down:
+                            model.CurrentHero.GazeDirection = Keys.Left; break;
+                        case Keys.Right:
+                            model.CurrentHero.GazeDirection = Keys.Down; break;
+                        case Keys.Left:
+                            model.CurrentHero.GazeDirection = Keys.Up; break;
+                    }
+                    break;
+            }
+
             if (!model.CurrentHero.KeyMap.Enable)
                 return;
             if (Useful.KeyIsMove(keyCode))
             {
                 model.CurrentHero.KeyMap.TurnOn(keyCode);
                 model.CurrentHero.MakeMove(keyCode);
-            }
-            else
-            {
-                switch (keyCode)
-                {
-                    case Keys.Tab:
-                        model.CurrentHero.KeyMap.TurnOff();
-                        model.SwitchHero();
-                        break;
-                    case Keys.Space:
-                        if (model.CurrentHero.KeyMap.GetAnyOnDirection() == Keys.None &&
-                            !model.CurrentHero.CurrentAnimation.IsMoving)
-                            model.CurrentHero.CreateSpell();
-                        break;
-                    case Keys.ControlKey:
-                        switch (model.CurrentHero.GazeDirection)
-                        {
-                            case Keys.Up:
-                                model.CurrentHero.GazeDirection = Keys.Right;
-
-                                break;
-                            case Keys.Down:
-                                model.CurrentHero.GazeDirection = Keys.Left; break;
-                            case Keys.Right:
-                                model.CurrentHero.GazeDirection = Keys.Down; break;
-                            case Keys.Left:
-                                model.CurrentHero.GazeDirection = Keys.Up; break;
-                        }
-                        break;
-					case Keys.Escape:
-						GetOut();
-						break;
-				}
             }
         }
 

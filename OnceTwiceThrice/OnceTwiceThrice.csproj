@@ -58,13 +58,20 @@
     <Compile Include="Heroes\HowardHero.cs" />
     <Compile Include="Heroes\ISpell.cs" />
     <Compile Include="Heroes\SpellBase.cs" />
+    <Compile Include="Items\SemiConductorItem.cs" />
+    <Compile Include="Mobs\TermiteMob.cs" />
+    <Compile Include="Items\FlowItem.cs" />
+    <Compile Include="Items\SwitcherItem.cs" />
     <Compile Include="Items\ThreeItem.cs" />
     <Compile Include="Menu.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mobs\BlueGolem.cs" />
-    <Compile Include="Mobs\Dino.cs" />
+    <Compile Include="Mobs\CactusMob.cs" />
+    <Compile Include="Mobs\DinoMob.cs" />
     <Compile Include="Mobs\FrogMob.cs" />
+    <Compile Include="Mobs\HotGuyMob.cs" />
+    <Compile Include="Mobs\MonkeyMob.cs" />
     <Compile Include="Mobs\PenguinMob.cs" />
     <Compile Include="Mobs\SharkMob.cs" />
     <Compile Include="Useful.cs" />
@@ -118,7 +125,15 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Levels\Level0.txt" />
+    <Content Include="Levels\Level9.txt" />
     <Content Include="Levels\Level1.txt" />
+    <Content Include="Levels\Level2.txt" />
+    <Content Include="Levels\Level3.txt" />
+    <Content Include="Levels\Level4.txt" />
+    <Content Include="Levels\Level5.txt" />
+    <Content Include="Levels\Level6.txt" />
+    <Content Include="Levels\Level7.txt" />
+    <Content Include="Levels\Level8.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

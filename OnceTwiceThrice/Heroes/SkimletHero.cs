@@ -25,6 +25,8 @@ namespace OnceTwiceThrice
         {
             base.CreateSpell((x, y) => new SkimletSpell(this, x, y, ImagePath));
         }
+
+        public override bool IceSlip => false;
     }
 
     public class SkimletSpell : SpellBase, ISpell
@@ -57,14 +59,18 @@ namespace OnceTwiceThrice
             {
                 if (mob is FrogMob && !mob.CurrentAnimation.IsMoving)
                 {
-                    MoveInOppositeDirection(this, mob);
+                    var direction = GetOppositeDirection(this, mob);
+                    if (direction != Keys.None)
+                        mob.GoTo(direction);
                     break;
                 }
-                //if (mob is CactusMob)
-                //{
-                //    RuleForCactusMob(mob);
-                //    break;
-                //}
+                if (mob is CactusMob && !mob.CurrentAnimation.IsMoving)
+                {
+                    var direction = GetOppositeDirection(this, mob);
+                    if (direction != Keys.None)
+                        mob.GoTo(Useful.ReverseDirection(direction));
+                        break;
+                }
             }
             OnDestroy += () =>
             {

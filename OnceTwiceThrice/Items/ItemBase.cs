@@ -12,7 +12,7 @@ namespace OnceTwiceThrice
         public Image Picture
         {
             get => _picture;
-            private set
+            protected set
             {
                 NeedInvalidate = true;
                 _picture = value;
@@ -26,6 +26,12 @@ namespace OnceTwiceThrice
 		private readonly int slidesCount;
         public bool NeedInvalidate { get; set; }
         public event Action OnDestroy;
+        public event Action<IMovable> OnStep;
+        public void Step(IMovable mob)
+        {
+            OnStep?.Invoke(mob);
+        }
+
 
         public ItemBase(GameModel model, int x, int y, int SlidesCount, string mobName)
 		{
@@ -44,6 +50,7 @@ namespace OnceTwiceThrice
             {
                 Model.ItemsMap[X, Y].Pop();
                 Model.NeedInvalidate = true;
+                Model.OnTick -= onTick;
             };
 		}
 
@@ -51,6 +58,8 @@ namespace OnceTwiceThrice
         {
             OnDestroy?.Invoke();
         }
+
+        public virtual void onTick() { }
 
 		protected void ChangeSlide()
 		{

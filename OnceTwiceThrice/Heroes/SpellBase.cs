@@ -100,25 +100,25 @@ namespace OnceTwiceThrice
             }
         }
 
-        public static void MoveInOppositeDirection(ISpell spell, IMob mob)
+        public static Keys GetOppositeDirection(ISpell spell, IMob mob)
         {
             if (!(Math.Abs(mob.X - spell.X) == 1 ^ Math.Abs(mob.Y - spell.Y) == 1) ||
                 !(Math.Abs(mob.X - spell.X) == 0 ^ Math.Abs(mob.Y - spell.Y) == 0))
-                return;
+                return Keys.None;
             if (Math.Abs(mob.X - spell.X) == 1)
             {
                 switch (mob.X - spell.X)
                 {
-                    case 1: mob.GoTo(Keys.Right); break;
-                    case -1: mob.GoTo(Keys.Left); break;
+                    case 1: return Keys.Right;
+                    case -1: return Keys.Left;
                 }
-                return;
             }
             switch (mob.Y - spell.Y)
             {
-                case 1: mob.GoTo(Keys.Down); break;
-                case -1: mob.GoTo(Keys.Up); break;
+                case 1: return Keys.Down;
+                case -1: return Keys.Up;
             }
+            return Keys.None;
         }
     }
 }

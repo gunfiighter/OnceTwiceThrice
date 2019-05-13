@@ -10,6 +10,11 @@ namespace OnceTwiceThrice
 
         public PenguinMob(GameModel model, int x, int y) : base(model, ImagePath, x, y)
         {
+            Action WaterToIce = () =>
+            {
+                if (Model.BackMap[X, Y] is WaterBackground)
+                    Model.BackMap[X, Y] = new IceBackground(Model, X, Y);
+            };
             OnMoveStart += () =>
             {
                 if (Model.BackMap[X, Y] is LavaBackground ||
@@ -19,24 +24,16 @@ namespace OnceTwiceThrice
                     return;
                 }
 
-                if (Model.BackMap[X, Y] is WaterBackground)
-                    Model.BackMap[X, Y] = new IceBackground(Model, X, Y);
+                WaterToIce();
             };
 
             OnCantMove += (key) =>
             {
-                var newDirection = key;
-                switch (key)
-                {
-                    case Keys.Up: newDirection = Keys.Down; break;
-                    case Keys.Down: newDirection = Keys.Up; break;
-                    case Keys.Right: newDirection = Keys.Left; break;
-                    case Keys.Left: newDirection = Keys.Right; break;
-                }
+                WaterToIce();
+
+                var newDirection = Useful.ReverseDirection(key);
                 GoTo(newDirection);
             };
-
-            OnStop += base.ForStop;
         }
         public override bool CanStep(IBackground background) => true;
 
@@ -44,8 +41,11 @@ namespace OnceTwiceThrice
         {
             foreach (var spell in Model.Spells.Where(spell => spell is MatthiusSpell && Math.Abs(spell.X - X) <= 1 && Math.Abs(spell.Y - Y) <= 1))
             {
-                SpellBase.MoveInOppositeDirection(spell, this);
+                var direction = SpellBase.GetOppositeDirection(spell, this);
+                if (direction != Keys.None)
+                    GoTo(direction);
             }
+            base.ForStop();
         }
 
         public override double Speed => 0.03;

@@ -22,6 +22,12 @@ namespace OnceTwiceThrice
         public int X { get; }
         public int Y { get; }
 
+        public event Action<IMovable> OnStep;
+        public void Step(IMovable mob)
+        {
+            OnStep?.Invoke(mob);
+        }
+
 		protected int animationCounter { get; set; }
 		private readonly Image[] slides;
 		private readonly int slidesCount;

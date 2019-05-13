@@ -45,7 +45,10 @@ namespace OnceTwiceThrice
         void UnlockKeyMap();
 		void UpdateImage();
         bool NeedInvalidate { get; set; }
-	}
+        void GoTo(Keys direction);
+        bool IceSlip { get; }
+        bool AllowToMove(Keys key);
+    }
 
 	public class MovableBase : IMovable
 	{
@@ -148,12 +151,7 @@ namespace OnceTwiceThrice
 
             model.MobMap[X, Y].AddLast(this);
 
-            OnMoveStart += () =>
-            {
-                model.MobMap[X, Y].Remove(this);
-                model.MobMap[MX, MY].AddLast(this);
-				model.MobMapChange(this);
-            };
+            OnMoveStart += ForMoveStart;
 
             OnStop += ForStop;
 
@@ -183,12 +181,21 @@ namespace OnceTwiceThrice
 
 		public void MakeMove(Keys key)
 		{
-			GazeDirection = key;
 
-			if (CurrentAnimation.IsMoving)
+            if (this is IMob)
+            {
+                if (!CurrentAnimation.IsMoving)
+                    GazeDirection = key;
+            }
+            else
+                GazeDirection = key;
+
+            if (CurrentAnimation.IsMoving)// && this is IMob)
 				return;
 
-			if (AllowToMove(key))
+            
+
+            if (AllowToMove(key))
 			{
 				DX = DY = 0;
 				var newMoveToX = X;
@@ -213,8 +220,12 @@ namespace OnceTwiceThrice
 		{
 			if (SkinIgnoreDirection && Model.TickCount % SlideLatency == 0)
 				AnimatedMove();
-			if (!CurrentAnimation.IsMoving)
-				return;
+            if (!CurrentAnimation.IsMoving)
+            {
+                if (StandingAnimation && Model.TickCount % SlideLatency == 0)
+                    AnimatedMove();
+                return;
+            }
 
             NeedInvalidate = true;
 
@@ -286,12 +297,21 @@ namespace OnceTwiceThrice
 				return CanMoveOn(Model.ItemsMap[newX, newY].Peek());
 			return CanMoveOn(Model.BackMap[newX, newY]);
 		}
+        public void GoTo(Keys direction)
+        {
+            KeyMap.TurnOff();
+            KeyMap.TurnOn(direction);
+            MakeMove(direction);
+        }
 
-		public bool CanMoveOn(IItems item) => item.CanStep(this) || CanStep(item);
+        public bool CanMoveOn(IItem item) => item.CanStep(this) || CanStep(item);
 		public bool CanMoveOn(IBackground background) => background.CanStep(this) || CanStep(background);
 
         public virtual void ForStop()
         {
+            Model.BackMap[X, Y].Step(this);
+            if (Model.ItemsMap[X, Y].Count > 0)
+                Model.ItemsMap[X, Y].Peek().Step(this);
             if (!KeyMap.Enable)
                 return;
             if (KeyMap[CurrentAnimation.Direction] &&
@@ -306,10 +326,21 @@ namespace OnceTwiceThrice
                 MakeMove(nextDirection);
         }
 
+        public virtual void ForMoveStart()
+        {
+            Model.MobMap[X, Y].Remove(this);
+            Model.MobMap[MX, MY].AddLast(this);
+            Model.MobMapChange(this);
+        }
+
         public bool NeedInvalidate { get; set; }
 
-		public virtual bool CanStep(IItems item) => false;
+        public virtual bool StandingAnimation => false;
+
+
+        public virtual bool CanStep(IItem item) => false;
 		public virtual bool CanStep(IBackground background) => false;
+        public virtual bool IceSlip => false;
         public virtual bool DestroyByMatthiusSpell => true;
         public virtual bool DestroyBySkimletSpell => false;
     }

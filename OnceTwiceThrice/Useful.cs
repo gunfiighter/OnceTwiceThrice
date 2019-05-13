@@ -59,15 +59,17 @@ namespace OnceTwiceThrice
 
 		public static string[] CutArray(string[] array, int begin, int end)
 		{
+            if (begin > end)
+                return new string[0];
 			var result = new string[end - begin + 1];
 			for (var i = begin; i <= end; i++)
 				result[i - begin] = array[i];
 			return result;
 		}
 
-        public static void ForeachReverse(Stack<IItems> stack, Action<IItems> act)
+        public static void ForeachReverse(Stack<IItem> stack, Action<IItem> act)
         {
-            var list = new List<IItems>();
+            var list = new List<IItem>();
             foreach(var e in stack)
                 list.Add(e);
             for (var i = list.Count - 1; i >= 0; i--)
@@ -79,5 +81,17 @@ namespace OnceTwiceThrice
             return (mob.X == x && mob.Y == y) ||
                     (mob.MX == x && mob.MY == y);
         }
-	}
+
+        public static Keys ReverseDirection(Keys direction)
+        {
+            switch (direction)
+            {
+                case Keys.Up: return Keys.Down;
+                case Keys.Right: return Keys.Left;
+                case Keys.Down: return Keys.Up;
+                case Keys.Left: return Keys.Right;
+            }
+            throw new ArgumentException();
+        }
+    }
 }

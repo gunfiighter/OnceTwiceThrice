@@ -18,7 +18,7 @@ namespace OnceTwiceThrice
 	public class MapDecoder
 	{
 		public Dictionary<char, Func<int, int, IBackground>> background;
-		public Dictionary<char, Func<int, int, IItems>> item;
+		public Dictionary<char, Func<int, int, IItem>> item;
 		public Dictionary<char, Func<GameModel, int, int, MovableBase>> hero;
 
 		public MapDecoder(GameModel model)
@@ -30,14 +30,22 @@ namespace OnceTwiceThrice
 			background.Add('L', (x, y) => new LavaBackground(model, x, y));
 			background.Add('I', (x, y) => new IceBackground(model, x, y));
 			
-			item = new Dictionary<char, Func<int, int, IItems>>();
+			item = new Dictionary<char, Func<int, int, IItem>>();
 			item.Add('S', (x, y) => new StoneItem(model, x, y));
 			item.Add('T', (x, y) => new ThreeItem(model, x, y));
 			item.Add('F', (x, y) => new FireItem(model, x, y));
 			item.Add('D', (x, y) => new DestinationItem(model, x, y));
-			item.Add('A', (x, y) => new AgaricItem(model, x, y));
+            item.Add('A', (x, y) => new AgaricItem(model, x, y));
+            item.Add('<', (x, y) => new FlowItem(model, x, y, Keys.Left, "Flow/Left"));
+            item.Add('>', (x, y) => new FlowItem(model, x, y, Keys.Right, "Flow/Right"));
+            item.Add('^', (x, y) => new FlowItem(model, x, y, Keys.Up, "Flow/Up"));
+            item.Add('v', (x, y) => new FlowItem(model, x, y, Keys.Down, "Flow/Down"));
+            item.Add('4', (x, y) => new SemiConductorItem(model, x, y, Keys.Left, "SemiConductor/Left"));
+            item.Add('6', (x, y) => new SemiConductorItem(model, x, y, Keys.Right, "SemiConductor/Right"));
+            item.Add('8', (x, y) => new SemiConductorItem(model, x, y, Keys.Up, "SemiConductor/Up"));
+            item.Add('2', (x, y) => new SemiConductorItem(model, x, y, Keys.Down, "SemiConductor/Down"));
 
-			hero = new Dictionary<char, Func<GameModel, int, int, MovableBase>>();
+            hero = new Dictionary<char, Func<GameModel, int, int, MovableBase>>();
 			hero.Add('M', (map, x, y) => new MatthiusHero(map, x, y));
             hero.Add('S', (map, x, y) => new SkimletHero(map, x, y));
             hero.Add('H', (map, x, y) => new HowardHero(map, x, y));
@@ -47,8 +55,12 @@ namespace OnceTwiceThrice
 			hero.Add('s', (map, x, y) => new SharkMob(map, x, y));
             hero.Add('f', (map, x, y) => new FrogMob(map, x, y));
 			hero.Add('p', (map, x, y) => new PenguinMob(map, x, y));
-			hero.Add('d', (map, x, y) => new DinoMob(map, x, y));
-		}
+            hero.Add('d', (map, x, y) => new DinoMob(map, x, y));
+            hero.Add('c', (map, x, y) => new CactusMob(map, x, y));
+            hero.Add('m', (map, x, y) => new MonkeyMob(map, x, y));
+            hero.Add('h', (map, x, y) => new HotGuyMob(map, x, y));
+            hero.Add('t', (map, x, y) => new TermiteMob(map, x, y));
+        }
 	} 
 	
 	public class GameModel
@@ -62,7 +74,7 @@ namespace OnceTwiceThrice
         public bool NeedInvalidate { get; set; }
 		
 		public IBackground[,] BackMap;
-		public Stack<IItems>[,] ItemsMap;
+		public Stack<IItem>[,] ItemsMap;
         public LinkedList<IMovable>[,] MobMap;
 		public LinkedList<IHero> Heroes;
 		public LinkedList<IMob> Mobs;
@@ -110,11 +122,11 @@ namespace OnceTwiceThrice
 			Height = lavel.Background.Length;
 			
 			BackMap = new IBackground[Width, Height];
-			ItemsMap = new Stack<IItems>[Width, Height];
+			ItemsMap = new Stack<IItem>[Width, Height];
             MobMap = new LinkedList<IMovable>[Width, Height];
             ItemsMap.Foreach((x, y) =>
             {
-                ItemsMap[x, y] = new Stack<IItems>();
+                ItemsMap[x, y] = new Stack<IItem>();
             });
             MobMap.Foreach((x, y) =>
             {
@@ -130,14 +142,17 @@ namespace OnceTwiceThrice
 			
 			//Заполнение фона
 			BackMap.Foreach((x, y) => { BackMap[x, y] = mapDecoder.background[lavel.Background[y][x]](x, y); });
-			
-			//Заполнение объектами
-			lavel.Items.Foreach((x, y) =>
-			{
-				var item = lavel.Items[y][x];
-				if (mapDecoder.item.ContainsKey(item))
-					ItemsMap[x, y].Push(mapDecoder.item[item](x, y));
-			});
+
+            //Заполнение объектами
+            foreach (var itemMap in lavel.Items)
+            {
+                itemMap.Foreach((x, y) =>
+                {
+                    var item = itemMap[y][x];
+                    if (mapDecoder.item.ContainsKey(item))
+                        ItemsMap[x, y].Push(mapDecoder.item[item](x, y));
+                });
+            }
 			
 			//Заполнение мобами
 			lavel.Mobs.Foreach((x, y) =>
@@ -155,6 +170,17 @@ namespace OnceTwiceThrice
 
 			if (Heroes.Count == 0)
 				throw new Exception("No heroes on the model");
+
+            foreach (var switcher in lavel.Switchers)
+            {
+                ItemsMap[switcher[0], switcher[1]].Push(
+                    new SwitcherItem(
+                        this,
+                        switcher[0],
+                        switcher[1],
+                        switcher[2],
+                        switcher[3]));
+            }
 
 			heroEnumerator = Heroes.GetEnumerator();
 			SwitchHero();
