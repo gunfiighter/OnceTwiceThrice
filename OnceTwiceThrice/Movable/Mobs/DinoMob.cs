@@ -53,7 +53,7 @@ namespace OnceTwiceThrice
 				Useful.XyPlusKeys(x, y, key, ref x, ref y);
 				if (!Model.IsInsideMap(x, y))
 					return false;
-				if (Model.MobMap[x, y].Count > 0)
+				if (Model.Map[x, y].Mobs.Count > 0)
 					return true;
 			}
 			return false;
@@ -87,7 +87,7 @@ namespace OnceTwiceThrice
             var newX = X;
             var newY = Y;
             Useful.XyPlusKeys(newX, newY, GazeDirection, ref newX, ref newY);
-            var willDie = Model.MobMap[newX, newY].Where(mob => mob != this && !(mob is SporeMob)).ToArray();
+            var willDie = Model.Map[newX, newY].Mobs.Where(mob => mob != this && !(mob is SporeMob)).ToArray();
             for (var i = 0; i < willDie.Length; i++)
                 willDie[i].Destroy();
         }

@@ -29,10 +29,10 @@ namespace OnceTwiceThrice
         {
             var g = args.Graphics;
             //Отрисовка фона
-            model.BackMap.Foreach((x, y) =>
+            model.Map.Foreach((x, y) =>
             {
                 g.DrawImage(
-                    model.BackMap[x, y].Picture,
+                    model.Map[x, y].Back.Picture,
                     x * DrawingScope,
                     y * DrawingScope,
                     DrawingScope,
@@ -40,9 +40,9 @@ namespace OnceTwiceThrice
             });
 
             //Отрисовка предметов
-            model.ItemsMap.Foreach((x, y) =>
+            model.Map.Foreach((x, y) =>
             {
-                Useful.ForeachReverse(model.ItemsMap[x, y], (item) =>
+                foreach (var item in model.Map[x, y].Items)
                 {
                     g.DrawImage(
                         item.Picture,
@@ -50,7 +50,7 @@ namespace OnceTwiceThrice
                         item.Y * DrawingScope,
                         DrawingScope,
                         DrawingScope);
-                });
+                };
             });
             //Обводка героя
             g.DrawRectangle(new Pen(Color.Gold, 2),
@@ -186,17 +186,17 @@ namespace OnceTwiceThrice
             }
 
             var result = new Region(new Rectangle(0, 0, 0, 0));
-            model.BackMap.Foreach((x, y) =>
+            model.Map.Foreach((x, y) =>
             {
-                if (model.BackMap[x, y].NeedInvalidate)
+                if (model.Map[x, y].Back.NeedInvalidate)
                 {
                     result.Union(regions[x, y]);
-                    model.BackMap[x, y].NeedInvalidate = false;
+                    model.Map[x, y].Back.NeedInvalidate = false;
                 }
             });
-            model.ItemsMap.Foreach((x, y) =>
+            model.Map.Foreach((x, y) =>
             {
-                foreach (var item in model.ItemsMap[x, y])
+                foreach (var item in model.Map[x, y].Items)
                     if (item.NeedInvalidate) {
                         result.Union(regions[x, y]);
                         item.NeedInvalidate = false;

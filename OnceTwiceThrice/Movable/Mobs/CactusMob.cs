@@ -13,7 +13,7 @@ namespace OnceTwiceThrice
             KeyMap.Enable = false;
             OnMoveStart += () =>
             {
-                foreach (var mob in Model.MobMap[MX, MY])
+                foreach (var mob in Model.Map[MX, MY].Mobs)
                     if (mob != this)
                     {
                         mob.Destroy();

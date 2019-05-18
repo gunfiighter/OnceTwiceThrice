@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -17,26 +18,42 @@ namespace OnceTwiceThrice
 
     public class Cell
     {
-        public class MyLinkedList<T>
+        public class MyLinkedList<T> : IEnumerable<T>
         {
             private readonly LinkedList<T> _value;
-            private event Action OnChange;
-            public MyLinkedList(Action act)
+            private event Action<T> OnAdd;
+            private event Action<T> OnRemove;
+            public MyLinkedList(Action<T> ActOnAdd, Action<T> ActOnRemove)
             {
                 _value = new LinkedList<T>();
-                this.OnChange += act;
+                this.OnAdd += ActOnAdd;
+                this.OnRemove += ActOnRemove;
             }
 
             public void Add(T item)
             {
                 _value.AddLast(item);
-                OnChange?.Invoke();
+                OnAdd?.Invoke(item);
             }
 
             public void Remove(T item)
             {
                 _value.Remove(item);
-                OnChange?.Invoke();
+                OnRemove?.Invoke(item);
+            }
+
+            public T Peek() => _value.Last.Value;
+
+            public int Count => _value.Count;
+
+            IEnumerator<T> IEnumerable<T>.GetEnumerator()
+            {
+                return _value.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return _value.GetEnumerator();
             }
         }
 
@@ -51,25 +68,29 @@ namespace OnceTwiceThrice
             }
         }
 
-        public MyLinkedList<IMob> Mobs;
-        public MyLinkedList<IHero> Heroes;
+        public MyLinkedList<IMovable> Mobs;
+        public MyLinkedList<IItem> Items;
 
         public readonly int X;
         public readonly int Y;
 
-        public event Action OnMobsChange;
-        public event Action OnHeroesChange;
+        public event Action<IMovable> OnMobAdd;
+        public event Action<IMovable> OnMobRemove;
+        public event Action<IItem> OnItemAdd;
+        public event Action<IItem> OnItemRemove;
         public event Action OnBackChange;
 
-        private void MobsChange() => OnMobsChange?.Invoke();
-        private void HeroesChange() => OnHeroesChange?.Invoke();
+        private void MobAdd(IMovable mob) => OnMobAdd?.Invoke(mob);
+        private void MobRemove(IMovable mob) => OnMobRemove?.Invoke(mob);
+        private void ItemAdd(IItem item) => OnItemAdd?.Invoke(item);
+        private void ItemRemove(IItem item) => OnItemRemove?.Invoke(item);
 
         public Cell(int x, int y)
         {
             X = x;
             Y = y;
-            Mobs = new MyLinkedList<IMob>(MobsChange);
-            Heroes = new MyLinkedList<IHero>(HeroesChange);
+            Mobs = new MyLinkedList<IMovable>(MobAdd, MobRemove);
+            Items = new MyLinkedList<IItem>(ItemAdd, ItemRemove);
         }
     }
 	
@@ -132,10 +153,7 @@ namespace OnceTwiceThrice
         public bool NeedInvalidate { get; set; }
 
         public Cell[,] Map;
-		
-		public IBackground[,] BackMap;
-		public Stack<IItem>[,] ItemsMap;
-        public LinkedList<IMovable>[,] MobMap;
+
 		public LinkedList<IHero> Heroes;
 		public LinkedList<IMob> Mobs;
 		public LinkedList<ISpell> Spells;
@@ -155,7 +173,7 @@ namespace OnceTwiceThrice
 		{
 			foreach (var hero in Heroes)
 			{
-				var itemsStack = ItemsMap[hero.X, hero.Y];
+				var itemsStack = Map[hero.X, hero.Y].Items;
 				if (itemsStack.Count == 0 || !(itemsStack.Peek() is DestinationItem))
 					return;
 			}
@@ -182,18 +200,7 @@ namespace OnceTwiceThrice
 
             Map = new Cell[Width, Height];
             Map.Foreach((x, y) => Map[x, y] = new Cell(x, y));
-			
-			BackMap = new IBackground[Width, Height];
-			ItemsMap = new Stack<IItem>[Width, Height];
-            MobMap = new LinkedList<IMovable>[Width, Height];
-            ItemsMap.Foreach((x, y) =>
-            {
-                ItemsMap[x, y] = new Stack<IItem>();
-            });
-            MobMap.Foreach((x, y) =>
-            {
-                MobMap[x, y] = new LinkedList<IMovable>();
-            });
+
             Heroes = new LinkedList<IHero>();
 			Mobs = new LinkedList<IMob>();
 			Spells = new LinkedList<ISpell>();
@@ -203,7 +210,7 @@ namespace OnceTwiceThrice
 			var mapDecoder = new MapDecoder(this);
 			
 			//Заполнение фона
-			BackMap.Foreach((x, y) => { BackMap[x, y] = mapDecoder.Background[level.Background[y][x]](x, y); });
+			Map.Foreach((x, y) => { Map[x, y].Back = mapDecoder.Background[level.Background[y][x]](x, y); });
 
             //Заполнение объектами
             foreach (var itemMap in level.Items)
@@ -212,7 +219,7 @@ namespace OnceTwiceThrice
                 {
                     var item = itemMap[y][x];
                     if (mapDecoder.Item.ContainsKey(item))
-                        ItemsMap[x, y].Push(mapDecoder.Item[item](x, y));
+                        Map[x, y].Items.Add(mapDecoder.Item[item](x, y));
                 });
             }
 			
@@ -235,7 +242,7 @@ namespace OnceTwiceThrice
 
             foreach (var switcher in level.Switchers)
             {
-                ItemsMap[switcher[0], switcher[1]].Push(
+                Map[switcher[0], switcher[1]].Items.Add(
                     new SwitcherItem(
                         this,
                         switcher[0],

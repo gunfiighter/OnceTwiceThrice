@@ -149,7 +149,7 @@ namespace OnceTwiceThrice
 			CurrentAnimation = new Animation();
 			CurrentAnimation.Direction = Keys.Down;
 
-            model.MobMap[X, Y].AddLast(this);
+            model.Map[X, Y].Mobs.Add(this);
 
             OnMoveStart += ForMoveStart;
 
@@ -164,14 +164,14 @@ namespace OnceTwiceThrice
 
 					model.OnTick -= MakeAnimation;
 					model.Mobs.Remove(this as IMob);
-					model.MobMap[MX, MY].Remove(this);
+					model.Map[MX, MY].Mobs.Remove(this);
 				}
 
 				if (this is IHero)
 				{
 					model.OnTick -= MakeAnimation;
 					model.Heroes.Remove(this as IHero);
-					model.MobMap[MX, MY].Remove(this);
+					model.Map[MX, MY].Mobs.Remove(this);
 				}
 				model.Deaths.AddLast(new Death(model, X, Y));
 				model.NeedInvalidate = true;
@@ -289,13 +289,13 @@ namespace OnceTwiceThrice
 				return false;
 
             if (this is IHero)
-                foreach (var mob in Model.MobMap[newX, newY])
+                foreach (var mob in Model.Map[newX, newY].Mobs)
                     if (mob is IHero)
                         return false;
 
-			if (Model.ItemsMap[newX, newY].Count > 0)
-				return CanMoveOn(Model.ItemsMap[newX, newY].Peek());
-			return CanMoveOn(Model.BackMap[newX, newY]);
+			if (Model.Map[newX, newY].Items.Count > 0)
+				return CanMoveOn(Model.Map[newX, newY].Items.Peek());
+			return CanMoveOn(Model.Map[newX, newY].Back);
 		}
         public void GoTo(Keys direction)
         {
@@ -309,9 +309,10 @@ namespace OnceTwiceThrice
 
         public virtual void ForStop()
         {
-            Model.BackMap[X, Y].Step(this);
-            if (Model.ItemsMap[X, Y].Count > 0)
-                Model.ItemsMap[X, Y].Peek().Step(this);
+            var cell = Model.Map[X, Y];
+            cell.Back.Step(this);
+            if (cell.Items.Count > 0)
+                cell.Items.Peek().Step(this);
             if (!KeyMap.Enable)
                 return;
             if (KeyMap[CurrentAnimation.Direction] &&
@@ -328,8 +329,8 @@ namespace OnceTwiceThrice
 
         public virtual void ForMoveStart()
         {
-            Model.MobMap[X, Y].Remove(this);
-            Model.MobMap[MX, MY].AddLast(this);
+            Model.Map[X, Y].Mobs.Remove(this);
+            Model.Map[MX, MY].Mobs.Add(this);
             Model.MobMapChange(this);
         }
 

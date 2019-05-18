@@ -18,14 +18,14 @@ namespace OnceTwiceThrice
                 _enable = value;
                 if (!value)
                 {
-                    Model.ItemsMap[_tx, _ty].Push(new StoneItem(Model, _tx, _ty));
+                    Model.Map[_tx, _ty].Items.Add(new StoneItem(Model, _tx, _ty));
                     Picture = pictureOn;
                 }
                 else
                 {
                     Picture = pictureOff;
-                    if (Model.ItemsMap[_tx, _ty].Count > 0)
-                        Model.ItemsMap[_tx, _ty].Peek().Destroy();
+                    if (Model.Map[_tx, _ty].Items.Count > 0)
+                        Model.Map[_tx, _ty].Items.Peek().Destroy();
                 }
             }
         }
@@ -58,8 +58,8 @@ namespace OnceTwiceThrice
         private bool CheckSwitch()
         {
             return
-                Model.ItemsMap[X, Y].Count > 1 ||
-                Model.MobMap[X, Y].Count > 0;
+                Model.Map[X, Y].Items.Count > 1 ||
+                Model.Map[X, Y].Mobs.Count > 0;
         }
 
         private void TurnOn()

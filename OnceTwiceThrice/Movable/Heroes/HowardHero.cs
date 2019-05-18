@@ -35,7 +35,7 @@ namespace OnceTwiceThrice
             {
                 if (!Model.IsInsideMap(x, y))
                     return;
-                foreach (var mob in Model.MobMap[x, y].Where(mob => mob is TermiteMob))
+                foreach (var mob in Model.Map[x, y].Mobs.Where(mob => mob is TermiteMob))
                 {
                     (mob as TermiteMob).CheckerTurnOn();
                     break;
@@ -46,7 +46,7 @@ namespace OnceTwiceThrice
             {
                 if (!Model.IsInsideMap(x, y))
                     return;
-                foreach (var mob in Model.MobMap[x, y].Where(mob => mob is HotGuyMob))
+                foreach (var mob in Model.Map[x, y].Mobs.Where(mob => mob is HotGuyMob))
                 {
                     (mob as HotGuyMob).TrySeachThree();
                     break;
@@ -56,7 +56,7 @@ namespace OnceTwiceThrice
 
             Action CreateThree = () =>
             {
-                Model.ItemsMap[X, Y].Push(new ThreeItem(Model, X, Y));
+                Model.Map[X, Y].Items.Add(new ThreeItem(Model, X, Y));
 
                 trySearchThreeHotGuy(X, Y - 1);
                 trySearchThreeHotGuy(X, Y + 1);
@@ -75,17 +75,17 @@ namespace OnceTwiceThrice
 
             OnDestroy += () =>
             {
-                if (Model.BackMap[X, Y] is GrassBackground)
+                if (Model.Map[X, Y].Back is GrassBackground)
                 {
-                    var stack = Model.ItemsMap[X, Y];
+                    var itemList = Model.Map[X, Y].Items;
 
-                    if (stack.Count == 0 || 
-                        stack.Peek() is SwitcherItem || 
-                        stack.Peek() is SemiConductorItem ||
-                        stack.Peek() is FlowItem)
+                    if (itemList.Count == 0 || 
+                        itemList.Peek() is SwitcherItem || 
+                        itemList.Peek() is SemiConductorItem ||
+                        itemList.Peek() is FlowItem)
                     {
                         var checkMob = false;
-                        foreach (var mob in Model.MobMap[X, Y])
+                        foreach (var mob in Model.Map[X, Y].Mobs)
                             if (mob.CurrentAnimation.IsMoving)
                             {
                                 checkMob = true;
@@ -93,9 +93,9 @@ namespace OnceTwiceThrice
                             }
                         if (!checkMob)
                         {
-                            if (stack.Count > 0) {
+                            if (itemList.Count > 0) {
                                 var onSwitcher = false;
-                                var item = stack.Peek();
+                                var item = itemList.Peek();
                                 if (item is SwitcherItem)
                                     onSwitcher = true;
                                 CreateThree();

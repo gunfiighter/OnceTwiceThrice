@@ -5,12 +5,27 @@ namespace OnceTwiceThrice
 {
 	public class BlueGolemMob : MobBase, IMob
 	{
-		public BlueGolemMob(GameModel model, int X, int Y) : base(model, "BlueGolem/", X, Y)
+        private int countTurn;
+        private int currentTick;
+        public BlueGolemMob(GameModel model, int X, int Y) : base(model, "BlueGolem/", X, Y)
 		{
 			OnCantMove += (key) =>
 			{
-				KeyMap.TurnOff();
-				switch (key)
+                if (currentTick == Model.TickCount)
+                {
+                    if (countTurn == 4)
+                    {
+                        Destroy();
+                        return;
+                    }
+                    countTurn++;
+                }
+                else
+                    countTurn = 1;
+
+                KeyMap.TurnOff();
+                currentTick = Model.TickCount;
+                switch (key)
 				{
 					case Keys.Up:
 						GoTo(Keys.Left); break;

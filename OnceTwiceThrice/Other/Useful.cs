@@ -67,7 +67,7 @@ namespace OnceTwiceThrice
 			return result;
 		}
 
-        public static void ForeachReverse(Stack<IItem> stack, Action<IItem> act)
+        public static void ForeachReverse(Cell.MyLinkedList<IItem> stack, Action<IItem> act)
         {
             var list = new List<IItem>();
             foreach(var e in stack)

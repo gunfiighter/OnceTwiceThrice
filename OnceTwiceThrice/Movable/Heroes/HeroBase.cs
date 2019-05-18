@@ -12,7 +12,7 @@ namespace OnceTwiceThrice
 			};
 			OnStop += () =>
 			{
-				var itemsStack = model.ItemsMap[this.X, this.Y];
+				var itemsStack = model.Map[this.X, this.Y].Items;
 				if (itemsStack.Count > 0 && itemsStack.Peek() is DestinationItem)
 					model.Win();
 			};

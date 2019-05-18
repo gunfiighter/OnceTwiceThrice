@@ -48,7 +48,7 @@ namespace OnceTwiceThrice
 
             OnDestroy += () =>
             {
-                Model.ItemsMap[X, Y].Pop();
+                Model.Map[X, Y].Items.Remove(Model.Map[X, Y].Items.Peek());
                 Model.NeedInvalidate = true;
                 Model.OnTick -= onTick;
             };

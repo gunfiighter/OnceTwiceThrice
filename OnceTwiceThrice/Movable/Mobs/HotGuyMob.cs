@@ -17,13 +17,13 @@ namespace OnceTwiceThrice
 
             OnStop += () =>
             {
-                var itemsStack = Model.ItemsMap[X, Y];
+                var itemsStack = Model.Map[X, Y].Items;
                 if (itemsStack.Count > 0 &&
                     itemsStack.Peek() is ThreeItem)
                 {
                     startTime = Model.TickCount;
                     itemsStack.Peek().Destroy();
-                    itemsStack.Push(new FireItem(Model, X, Y));
+                    itemsStack.Add(new FireItem(Model, X, Y));
                     Model.OnTick += onTick;
                 }
             };
@@ -61,7 +61,7 @@ namespace OnceTwiceThrice
 
         public override void ForMoveStart()
         {
-            var willDie = Model.MobMap[MX, MY].ToArray();
+            var willDie = Model.Map[MX, MY].Mobs.ToArray();
             for (var i = 0; i < willDie.Length; i++)
                 willDie[i].Destroy();
             base.ForMoveStart();
@@ -73,8 +73,8 @@ namespace OnceTwiceThrice
             if (!Model.IsInsideMap(x, y))
                 return false;
             return 
-                Model.ItemsMap[x, y].Count > 0 &&
-                Model.ItemsMap[x, y].Peek() is ThreeItem;
+                Model.Map[x, y].Items.Count > 0 &&
+                Model.Map[x, y].Items.Peek() is ThreeItem;
         }
 
         public override bool CanStep(IItem item)

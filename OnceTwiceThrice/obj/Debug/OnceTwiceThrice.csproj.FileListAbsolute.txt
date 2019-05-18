@@ -46,3 +46,13 @@ C:\Users\ivan\Downloads\OnceTwiceThrice-master\OnceTwiceThrice-master\OnceTwiceT
 C:\Users\ivan\Downloads\OnceTwiceThrice-master\OnceTwiceThrice-master\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.Properties.Resources.resources
 C:\Users\ivan\Downloads\OnceTwiceThrice-master\OnceTwiceThrice-master\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.csproj.GenerateResource.cache
 C:\Users\ivan\Downloads\OnceTwiceThrice-master\OnceTwiceThrice-master\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.csproj.CoreCompileInputs.cache
+C:\Users\ivan\source\repos\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.csprojAssemblyReference.cache
+C:\Users\ivan\source\repos\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.MyForm.resources
+C:\Users\ivan\source\repos\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.Properties.Resources.resources
+C:\Users\ivan\source\repos\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.csproj.GenerateResource.cache
+C:\Users\ivan\source\repos\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.csproj.CoreCompileInputs.cache
+C:\Users\ivan\source\repos\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.exe
+C:\Users\ivan\source\repos\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.pdb
+C:\Users\ivan\source\repos\OnceTwiceThrice\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.exe.config
+C:\Users\ivan\source\repos\OnceTwiceThrice\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.exe
+C:\Users\ivan\source\repos\OnceTwiceThrice\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.pdb

@@ -6,8 +6,8 @@ namespace OnceTwiceThrice
 	{
 		public FireItem(GameModel model,int x, int y) : base(model, x, y, 4, "Fire")
 		{
-            if (Model.BackMap[X, Y] is GrassBackground)
-                Model.BackMap[X, Y] = new BurnedBackground(Model, X, Y);
+            if (Model.Map[X, Y].Back is GrassBackground)
+                Model.Map[X, Y].Back = new BurnedBackground(Model, X, Y);
             model.OnTick += onTick;
 
         }

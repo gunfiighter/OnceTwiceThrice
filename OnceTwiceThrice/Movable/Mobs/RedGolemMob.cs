@@ -23,7 +23,9 @@ namespace OnceTwiceThrice
                 }
                 else
                     countTurn = 1;
+
 				KeyMap.TurnOff();
+                currentTick = Model.TickCount;
 				switch (key)
 				{
 					case Keys.Up:

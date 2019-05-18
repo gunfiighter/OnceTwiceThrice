@@ -35,25 +35,25 @@ namespace OnceTwiceThrice
             {
                 case Keys.Up:
                     for (var i = Y - 1; i >= 0; i--)
-                        foreach (var mob in Model.MobMap[X, i])
+                        foreach (var mob in Model.Map[X, i].Mobs)
                             if (mob is IHero)
                                 return true;
                     break;
                 case Keys.Down:
                     for (var i = Y + 1; i < Model.Height; i++)
-                        foreach (var mob in Model.MobMap[X, i])
+                        foreach (var mob in Model.Map[X, i].Mobs)
                             if (mob is IHero)
                                 return true;
                     break;
                 case Keys.Left:
                     for (var i = X - 1; i >= 0; i--)
-                        foreach (var mob in Model.MobMap[i, Y])
+                        foreach (var mob in Model.Map[i, Y].Mobs)
                             if (mob is IHero)
                                 return true;
                     break;
                 case Keys.Right:
                     for (var i = X + 1; i < Model.Width; i++)
-                        foreach (var mob in Model.MobMap[i, Y])
+                        foreach (var mob in Model.Map[i, Y].Mobs)
                             if (mob is IHero)
                                 return true;
                     break;

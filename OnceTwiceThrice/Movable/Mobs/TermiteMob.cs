@@ -35,7 +35,7 @@ namespace OnceTwiceThrice
 
         public override void ForStop()
         {
-            var itemsStack = Model.ItemsMap[X, Y];
+            var itemsStack = Model.Map[X, Y].Items;
             if (itemsStack.Count > 0 &&
                 itemsStack.Peek() is ThreeItem)
             {                
@@ -78,7 +78,7 @@ namespace OnceTwiceThrice
 
         public override void ForMoveStart()
         {
-            var willDie = Model.MobMap[MX, MY].ToArray();
+            var willDie = Model.Map[MX, MY].Mobs.ToArray();
             for (var i = 0; i < willDie.Length; i++)
                 willDie[i].Destroy();
             base.ForMoveStart();
@@ -89,16 +89,16 @@ namespace OnceTwiceThrice
             Useful.XyPlusKeys(x, y, direction, ref x, ref y);
             if (!Model.IsInsideMap(x, y))
                 return false;
-            if (Model.ItemsMap[x, y].Count > 0 &&
-                Model.ItemsMap[x, y].Peek() is ThreeItem)
+            if (Model.Map[x, y].Items.Count > 0 &&
+                Model.Map[x, y].Items.Peek() is ThreeItem)
                 return true;
 
             Useful.XyPlusKeys(x, y, direction, ref x, ref y);
             if (!Model.IsInsideMap(x, y))
                 return false;
             return 
-                Model.ItemsMap[x, y].Count > 0 &&
-                Model.ItemsMap[x, y].Peek() is ThreeItem;
+                Model.Map[x, y].Items.Count > 0 &&
+                Model.Map[x, y].Items.Peek() is ThreeItem;
         }
 
         public override bool CanStep(IItem item)
