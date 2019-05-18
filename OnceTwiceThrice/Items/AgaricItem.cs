@@ -81,7 +81,7 @@ namespace OnceTwiceThrice
 			newMob.GoTo(direction);
 		}
 
-		public bool CanStep(MovableBase mob) => true;
+		public bool CanStep(MovableBase mob) => false;
 		public bool CanStop(MovableBase mob) => true;
 	}
 }

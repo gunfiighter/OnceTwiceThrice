@@ -12,27 +12,12 @@ namespace OnceTwiceThrice
 		{
 			OnMoveStart += base.ForMoveStart;
 
-			model.OnMobMapChange += (mob) =>
-			{
-				if (mob == this)
-					return;
-				var mobX = mob.MX;
-				var mobY = mob.MY;
-				if (Math.Abs(X - mobX) <= 2 && Math.Abs(Y - mobY) == 0)
-				{
-					if (mobX > X)
-						GoTo(Keys.Right);
-					if (mobX < X)
-						GoTo(Keys.Left);
-				}
-				if (Math.Abs(X - mobX) == 0 && Math.Abs(Y - mobY) <= 2)
-				{
-					if (mobY > Y)
-						GoTo(Keys.Down);
-					if (mobY < Y)
-						GoTo(Keys.Up);
-				}
-			};
+            model.OnMobMapChange += ForMobMapChange;
+
+            OnDestroy += () =>
+            {
+                model.OnMobMapChange -= ForMobMapChange;
+            };
 
 			OnStop += () =>
 			{
@@ -73,6 +58,28 @@ namespace OnceTwiceThrice
 			}
 			return false;
 		}
+
+        public void ForMobMapChange(IMovable mob)
+        {
+            if (mob == this)
+                return;
+            var mobX = mob.MX;
+            var mobY = mob.MY;
+            if (Math.Abs(X - mobX) <= 2 && Math.Abs(Y - mobY) == 0)
+            {
+                if (mobX > X)
+                    GoTo(Keys.Right);
+                if (mobX < X)
+                    GoTo(Keys.Left);
+            }
+            if (Math.Abs(X - mobX) == 0 && Math.Abs(Y - mobY) <= 2)
+            {
+                if (mobY > Y)
+                    GoTo(Keys.Down);
+                if (mobY < Y)
+                    GoTo(Keys.Up);
+            }
+        }
 
 		public override void ForStop() { }
         public override void ForMoveStart()

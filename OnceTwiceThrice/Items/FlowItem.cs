@@ -25,19 +25,19 @@ namespace OnceTwiceThrice
                     else
                     {
                         mob.KeyMap.Enable = false;
-                        Model.OnTick += onTick;
+                        Model.OnTick += OnTick;
                     }
                 }
             };
         }
 
-        private void onTick()
+        private void OnTick()
         {
             if (currentMob.AllowToMove(Direction))
             {
                 currentMob.MakeMove(Direction);
                 currentMob.KeyMap.Enable = true;
-                Model.OnTick -= onTick;
+                Model.OnTick -= OnTick;
             }
         }
         

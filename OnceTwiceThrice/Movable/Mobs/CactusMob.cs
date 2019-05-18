@@ -20,14 +20,21 @@ namespace OnceTwiceThrice
                         return;
                     }
             };
-            Model.OnMobMapChange += (mob) =>
+            Model.OnMobMapChange += ForMobMapChange;
+
+            OnDestroy += () =>
             {
-                if (mob.MX == X && mob.MY == Y)
-                {
-                    if (mob != this)
-                        mob.Destroy();
-                }
+                Model.OnMobMapChange -= ForMobMapChange;
             };
+        }
+
+        public void ForMobMapChange(IMovable mob)
+        {
+            if (mob.MX == X && mob.MY == Y)
+            {
+                if (mob != this)
+                    mob.Destroy();
+            }
         }
 
         public override bool SkinIgnoreDirection => true;

@@ -79,7 +79,10 @@ namespace OnceTwiceThrice
                 {
                     var stack = Model.ItemsMap[X, Y];
 
-                    if (stack.Count == 0 || stack.Peek() is SwitcherItem || stack.Peek() is SemiConductorItem)
+                    if (stack.Count == 0 || 
+                        stack.Peek() is SwitcherItem || 
+                        stack.Peek() is SemiConductorItem ||
+                        stack.Peek() is FlowItem)
                     {
                         var checkMob = false;
                         foreach (var mob in Model.MobMap[X, Y])
