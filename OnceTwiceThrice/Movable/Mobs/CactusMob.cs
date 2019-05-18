@@ -11,30 +11,12 @@ namespace OnceTwiceThrice
         public CactusMob(GameModel model, int x, int y) : base(model, "Cactus/", x, y)
         {
             KeyMap.Enable = false;
+            Model.Map[X, Y].OnMobAdd += TryKill;
             OnMoveStart += () =>
             {
-                foreach (var mob in Model.Map[MX, MY].Mobs)
-                    if (mob != this)
-                    {
-                        mob.Destroy();
-                        return;
-                    }
+                Model.Map[X, Y].OnMobAdd -= TryKill;
             };
-            Model.OnMobMapChange += ForMobMapChange;
-
-            OnDestroy += () =>
-            {
-                Model.OnMobMapChange -= ForMobMapChange;
-            };
-        }
-
-        public void ForMobMapChange(IMovable mob)
-        {
-            if (mob.MX == X && mob.MY == Y)
-            {
-                if (mob != this)
-                    mob.Destroy();
-            }
+            OnDestroy += () => Model.Map[X, Y].OnMobAdd -= TryKill;
         }
 
         public override bool SkinIgnoreDirection => true;

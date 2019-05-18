@@ -6,7 +6,6 @@ namespace OnceTwiceThrice
 	{
 		public MobBase(GameModel model, string ImageFile, int X, int Y) : base(model, ImageFile, X, Y)
 		{
-			;
 			OnMoveStart += MoveStart;
 		}
 
@@ -33,8 +32,20 @@ namespace OnceTwiceThrice
                 }
             }
         }
-        
-		public override double Speed
+
+        public void TryKill(IMovable mob)
+        {
+            if (mob is IMob imob)
+                TryKill(imob);
+        }
+
+        public void TryKill(IMob mob)
+        {
+            if (CanKill(mob))
+                mob.Destroy();
+        }
+
+        public override double Speed
 		{
 			get { return 0.033; }
 		}

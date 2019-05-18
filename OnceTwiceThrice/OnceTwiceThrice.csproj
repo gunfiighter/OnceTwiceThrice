@@ -53,6 +53,7 @@
     <Compile Include="Backgrounds\GrassBackground.cs" />
     <Compile Include="Backgrounds\IBackground.cs" />
     <Compile Include="Backgrounds\WaterBackground.cs" />
+    <Compile Include="Movable\Strong.cs" />
     <Compile Include="Other\Death.cs" />
     <Compile Include="GameModel\GameModel.cs" />
     <Compile Include="Movable\Heroes\HowardHero.cs" />

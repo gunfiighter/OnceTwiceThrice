@@ -48,6 +48,7 @@ namespace OnceTwiceThrice
         void GoTo(Keys direction);
         bool IceSlip { get; }
         bool AllowToMove(Keys key);
+        bool CanKill(IMob mob);
     }
 
 	public class MovableBase : IMovable
@@ -234,6 +235,16 @@ namespace OnceTwiceThrice
 			Useful.XyPlusKeys(0, 0, CurrentAnimation.Direction, ref newX, ref newY);
 			DX += newX * Speed;
 			DY += newY * Speed;
+
+            foreach (var mob in Model.Mobs)
+            {
+                if (mob != this && CheckIntersection(mob))
+                {
+                    var imob = this as IMob;
+                    imob.TryKill(mob);                   
+                }
+            }
+
 			if (Model.TickCount % SlideLatency == 0)
 				AnimatedMove();
 			if (1 - Math.Abs(DX) < 0.01 || 1 - Math.Abs(DY) < 0.01)
@@ -250,7 +261,25 @@ namespace OnceTwiceThrice
 			}
 		}
 
-		public void AnimatedMove()
+        private bool CheckIntersection(IMob mob)
+        {
+            var x1 = 0d;
+            var y1 = 0d;
+            GetXY(this, ref x1, ref y1);
+            
+            var x2 = 0d;
+            var y2 = 0d;
+            GetXY(mob, ref x2, ref y2);
+            return false;
+        }
+
+        public void GetXY(IMovable mob, ref double x, ref double y)
+        {
+            x = mob.X + mob.DX;
+            y = mob.Y + mob.DY;
+        }
+
+        public void AnimatedMove()
 		{
 			slideCounter++;
 			if (slideCounter == this.SlidesCount) slideCounter = 0;
@@ -307,6 +336,7 @@ namespace OnceTwiceThrice
         public bool CanMoveOn(IItem item) => item.CanStep(this) || CanStep(item);
 		public bool CanMoveOn(IBackground background) => background.CanStep(this) || CanStep(background);
 
+        public virtual bool CanKill(IMob mob) => Strong.CanKill(this as IMob, mob);
         public virtual void ForStop()
         {
             var cell = Model.Map[X, Y];
