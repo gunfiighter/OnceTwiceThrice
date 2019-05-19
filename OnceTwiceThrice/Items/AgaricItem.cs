@@ -77,7 +77,7 @@ namespace OnceTwiceThrice
 		private void Shoot(GameModel model, int startX, int startY, Keys direction)
 		{
 			var newMob = new SporeMob(model, startX, startY);
-			model.Mobs.AddLast(newMob);
+			model.Mobs.Add(newMob);
 			newMob.GoTo(direction);
 		}
 

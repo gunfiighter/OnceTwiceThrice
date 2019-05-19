@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OnceTwiceThrice.Other;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -154,10 +155,10 @@ namespace OnceTwiceThrice
 
         public Cell[,] Map;
 
-		public LinkedList<IHero> Heroes;
-		public LinkedList<IMob> Mobs;
-		public LinkedList<ISpell> Spells;
-		public LinkedList<Death> Deaths;
+		public MyList<IHero> Heroes;
+		public MyList<IMob> Mobs;
+		public MyList<ISpell> Spells;
+		public MyList<Death> Deaths;
 
 		public event Action OnWin;
 		public event Action OnGameOver;
@@ -201,10 +202,10 @@ namespace OnceTwiceThrice
             Map = new Cell[Width, Height];
             Map.Foreach((x, y) => Map[x, y] = new Cell(x, y));
 
-            Heroes = new LinkedList<IHero>();
-			Mobs = new LinkedList<IMob>();
-			Spells = new LinkedList<ISpell>();
-			Deaths = new LinkedList<Death>();
+            Heroes = new MyList<IHero>();
+			Mobs = new MyList<IMob>();
+			Spells = new MyList<ISpell>();
+			Deaths = new MyList<Death>();
 
 
 			var mapDecoder = new MapDecoder(this);
@@ -231,9 +232,9 @@ namespace OnceTwiceThrice
 				{
 					var mob = mapDecoder.hero[mobChar](this, x, y);
 					if (mob is IHero hero)
-						Heroes.AddLast(hero);
+						Heroes.Add(hero);
 					if (mob is IMob imob)
-						Mobs.AddLast(imob);
+						Mobs.Add(imob);
 				}
 			});
 

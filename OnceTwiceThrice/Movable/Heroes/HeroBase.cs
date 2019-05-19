@@ -17,6 +17,8 @@ namespace OnceTwiceThrice
 					model.Win();
 			};
 			OnMoveStart += MoveStart;
+
+            iHero = this as IHero;
 		}
 
 		public override sbyte SlidesCount => 4;
@@ -26,31 +28,31 @@ namespace OnceTwiceThrice
             var newX = 0;
             var newY = 0;
             Useful.XyPlusKeys(X, Y, this.GazeDirection, ref newX, ref newY);
-            Model.Spells.AddLast(spell(newX, newY));
+            Model.Spells.Add(spell(newX, newY));
         }
 
 		public virtual void MoveStart()
 		{
-			foreach (var mob in Model.Mobs)
-			{
-				if ((mob.MX == MX && mob.MY == MY) || (mob.X == MX && mob.Y == MY))
-				{
-					var needDeath = true;
-					if (mob.CurrentAnimation.IsMoving && mob.GazeDirection == GazeDirection)
-					{
-						switch (GazeDirection)
-						{
-							case Keys.Right: if (X < mob.X) needDeath = false; break;
-							case Keys.Left: if (X > mob.X) needDeath = false; break;
-							case Keys.Up: if (Y > mob.Y) needDeath = false; break;
-							case Keys.Down: if (Y < mob.Y) needDeath = false; break;
-						}
-					}
-					if (needDeath)
-						Destroy();
-					return;
-				}
-			}
+			//foreach (var mob in Model.Mobs)
+			//{
+			//	if ((mob.MX == MX && mob.MY == MY) || (mob.X == MX && mob.Y == MY))
+			//	{
+			//		var needDeath = true;
+			//		if (mob.CurrentAnimation.IsMoving && mob.GazeDirection == GazeDirection)
+			//		{
+			//			switch (GazeDirection)
+			//			{
+			//				case Keys.Right: if (X < mob.X) needDeath = false; break;
+			//				case Keys.Left: if (X > mob.X) needDeath = false; break;
+			//				case Keys.Up: if (Y > mob.Y) needDeath = false; break;
+			//				case Keys.Down: if (Y < mob.Y) needDeath = false; break;
+			//			}
+			//		}
+			//		if (needDeath)
+			//			Destroy();
+			//		return;
+			//	}
+			//}
 		}
 
         public override bool IceSlip => true;

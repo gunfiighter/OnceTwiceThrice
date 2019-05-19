@@ -9,8 +9,7 @@ namespace OnceTwiceThrice
 		public static string ImagePath = "Shark/";
 		public SharkMob(GameModel model, int X, int Y) : base(model, ImagePath, X, Y)
 		{
-            Model.Map[X, Y].OnMobAdd += TryKill;
-            OnDestroy += () => Model.Map[X, Y].OnMobAdd -= TryKill;
+            ;
         }
 
 		public override bool SkinIgnoreDirection => true;

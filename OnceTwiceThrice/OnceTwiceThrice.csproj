@@ -75,6 +75,7 @@
     <Compile Include="Movable\Mobs\MonkeyMob.cs" />
     <Compile Include="Movable\Mobs\PenguinMob.cs" />
     <Compile Include="Movable\Mobs\SharkMob.cs" />
+    <Compile Include="Other\MyList.cs" />
     <Compile Include="Other\Useful.cs" />
     <Compile Include="Movable\Heroes\HeroBase.cs" />
     <Compile Include="Movable\Heroes\SkimletHero.cs" />

@@ -49,6 +49,8 @@ namespace OnceTwiceThrice
         bool IceSlip { get; }
         bool AllowToMove(Keys key);
         bool CanKill(IMob mob);
+        IHero iHero { get; }
+        IMob iMob { get; }
     }
 
 	public class MovableBase : IMovable
@@ -114,6 +116,9 @@ namespace OnceTwiceThrice
 		{
 			get { return 0.05; }
 		}
+
+        public IMob iMob { get; protected set; }
+        public IHero iHero { get; protected set; }
 		
 		public virtual bool SkinIgnoreDirection => false;
 		public virtual int SlideLatency { get => 10;  }
@@ -122,6 +127,9 @@ namespace OnceTwiceThrice
 		{
 			this.Model = model;
 			KeyMap = new KeyMap();
+            iMob = null;
+            iHero = null;
+            
 			goDown = new List<Image>();
 			goUp = new List<Image>();
 			goRight = new List<Image>();
@@ -174,7 +182,7 @@ namespace OnceTwiceThrice
 					model.Heroes.Remove(this as IHero);
 					model.Map[MX, MY].Mobs.Remove(this);
 				}
-				model.Deaths.AddLast(new Death(model, X, Y));
+				model.Deaths.Add(new Death(model, X, Y));
 				model.NeedInvalidate = true;
 			};
 
@@ -238,11 +246,8 @@ namespace OnceTwiceThrice
 
             foreach (var mob in Model.Mobs)
             {
-                if (mob != this && CheckIntersection(mob))
-                {
-                    var imob = this as IMob;
-                    imob.TryKill(mob);                   
-                }
+                if (mob != this)
+                    Conflict(this, mob);
             }
 
 			if (Model.TickCount % SlideLatency == 0)
@@ -261,16 +266,59 @@ namespace OnceTwiceThrice
 			}
 		}
 
-        private bool CheckIntersection(IMob mob)
+        private void Conflict(IMovable mob1, IMovable mob2)
+        {
+            if (CheckIntersection(mob1, mob2))
+            {
+                if (mob1.iHero != null)
+                {
+                    mob1.Destroy();
+                    return;
+                }
+                if (mob2.iHero != null)
+                {
+                    mob2.Destroy();
+                    return;
+                }
+                if (mob1.CanKill(mob2 as IMob))
+                {
+                    mob2.Destroy();
+                    return;
+                }
+                if (mob2.CanKill(mob1 as IMob))
+                {
+                    mob1.Destroy();
+                    return;
+                }
+            }
+        }
+
+        private bool CheckIntersection(IMovable mob1, IMovable mob2)
         {
             var x1 = 0d;
             var y1 = 0d;
-            GetXY(this, ref x1, ref y1);
+            GetXY(mob1, ref x1, ref y1);
             
             var x2 = 0d;
             var y2 = 0d;
-            GetXY(mob, ref x2, ref y2);
-            return false;
+            GetXY(mob2, ref x2, ref y2);
+            return func(x1, y1, x2, y2);
+        }
+
+        public bool func(double x1, double y1, double x2, double y2)
+        {
+            if (x2 < x1)
+                return func(x2, y2, x1, y1);
+            //if (x1 + 1 <= x2 || y1 >= y2 + 1 || y1 + 1 <= y2)
+            //    return false;
+            var eps = 0.03;
+            if (x1 + 1 > x2 + eps && y1 + eps < y2 + 1 && y1 + 1 > y2 + eps)
+            {
+                ;
+            }
+            return (x1 + 1 > x2 + eps && y1 + eps < y2 + 1 && y1 + 1 > y2 + eps);
+
+            //return true;
         }
 
         public void GetXY(IMovable mob, ref double x, ref double y)
