@@ -244,8 +244,17 @@ namespace OnceTwiceThrice
 			DX += newX * Speed;
 			DY += newY * Speed;
 
+			if (this is DinoMob)
+			{
+				;
+			}
+
             foreach (var mob in Model.Mobs)
             {
+				if (mob is SkimletHero)
+				{
+					;
+				}
                 if (mob != this)
                     Conflict(this, mob);
             }

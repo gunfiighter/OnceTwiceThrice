@@ -59,14 +59,6 @@ namespace OnceTwiceThrice
             onTick();
         }
 
-        public override void ForMoveStart()
-        {
-            var willDie = Model.Map[MX, MY].Mobs.ToArray();
-            for (var i = 0; i < willDie.Length; i++)
-                willDie[i].Destroy();
-            base.ForMoveStart();
-        }
-
         private bool checkThree(int x, int y, Keys direction)
         {
             Useful.XyPlusKeys(x, y, direction, ref x, ref y);

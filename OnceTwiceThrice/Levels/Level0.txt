@@ -14,8 +14,8 @@ GGBBLLBBGGWWGGGG
 GGBBBBBBGGWWGGGG
 //item
 .....TT.TT......
-.D......T.....D.
-.......TTT......
+.D....T.T.....D.
+......TTTT......
 .........TT...TT
 .........TT..TTT
 .........TT..TTT
@@ -37,6 +37,6 @@ GGBBBBBBGGWWGGGG
 .d.....S.M...m..
 d.......H....m..
 .........p...m..
-........f....m..
+..d.....f....m..
 //switcher
 7 3 8 10

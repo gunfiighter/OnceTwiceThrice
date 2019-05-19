@@ -56,3 +56,13 @@ C:\Users\ivan\source\repos\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceTh
 C:\Users\ivan\source\repos\OnceTwiceThrice\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.exe.config
 C:\Users\ivan\source\repos\OnceTwiceThrice\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.exe
 C:\Users\ivan\source\repos\OnceTwiceThrice\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.pdb
+D:\УЧЁБА\Новая папка\OnceTwiceThrice\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.exe.config
+D:\УЧЁБА\Новая папка\OnceTwiceThrice\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.exe
+D:\УЧЁБА\Новая папка\OnceTwiceThrice\OnceTwiceThrice\bin\Debug\OnceTwiceThrice.pdb
+D:\УЧЁБА\Новая папка\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.csprojAssemblyReference.cache
+D:\УЧЁБА\Новая папка\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.MyForm.resources
+D:\УЧЁБА\Новая папка\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.Properties.Resources.resources
+D:\УЧЁБА\Новая папка\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.csproj.GenerateResource.cache
+D:\УЧЁБА\Новая папка\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.csproj.CoreCompileInputs.cache
+D:\УЧЁБА\Новая папка\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.exe
+D:\УЧЁБА\Новая папка\OnceTwiceThrice\OnceTwiceThrice\obj\Debug\OnceTwiceThrice.pdb
