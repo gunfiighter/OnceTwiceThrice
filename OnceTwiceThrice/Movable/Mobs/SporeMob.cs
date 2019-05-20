@@ -1,3 +1,4 @@
+
 namespace OnceTwiceThrice
 {
 	public class SporeMob : MobBase, IMob

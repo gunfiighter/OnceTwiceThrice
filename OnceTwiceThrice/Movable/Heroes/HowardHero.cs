@@ -75,35 +75,24 @@ namespace OnceTwiceThrice
 
             OnDestroy += () =>
             {
-                if (Model.Map[X, Y].Back is GrassBackground)
+                if (Model.Map[X, Y].Back is GrassBackground && Model.Map[X, Y].Mobs.Count == 0)
                 {
                     var itemList = Model.Map[X, Y].Items;
 
                     if (itemList.Count == 0 || 
                         itemList.Peek() is SwitcherItem || 
-                        itemList.Peek() is SemiConductorItem ||
-                        itemList.Peek() is FlowItem)
+                        itemList.Peek() is SemiConductorItem)
                     {
-                        var checkMob = false;
-                        foreach (var mob in Model.Map[X, Y].Mobs)
-                            if (mob.CurrentAnimation.IsMoving)
-                            {
-                                checkMob = true;
-                                break;
-                            }
-                        if (!checkMob)
-                        {
-                            if (itemList.Count > 0) {
-                                var onSwitcher = false;
-                                var item = itemList.Peek();
-                                if (item is SwitcherItem)
-                                    onSwitcher = true;
-                                CreateThree();
-                                if (onSwitcher)
-                                    item.Step(Hero);
-                            } else
-                                CreateThree();
-                        }
+                        if (itemList.Count > 0) {
+                            var onSwitcher = false;
+                            var item = itemList.Peek();
+                            if (item is SwitcherItem)
+                                onSwitcher = true;
+                            CreateThree();
+                            if (onSwitcher)
+                                item.Step(Hero);
+                        } else
+                            CreateThree();
                     }
                 }
             };

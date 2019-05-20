@@ -1,14 +1,7 @@
-﻿using OnceTwiceThrice.Other;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Linq;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace OnceTwiceThrice
 {	
@@ -284,7 +277,60 @@ namespace OnceTwiceThrice
 
 			CurrentHero = heroEnumerator.Current;
 		}
-	}
+
+        public void Conflict(IMovable mob1, IMovable mob2)
+        {
+            if (CheckIntersection(mob1, mob2))
+            {
+                if (mob1.iHero != null)
+                {
+                    mob1.Destroy();
+                    return;
+                }
+                if (mob2.iHero != null)
+                {
+                    mob2.Destroy();
+                    return;
+                }
+                if (mob1.CanKill(mob2 as IMob))
+                {
+                    mob2.Destroy();
+                    return;
+                }
+                if (mob2.CanKill(mob1 as IMob))
+                {
+                    mob1.Destroy();
+                    return;
+                }
+            }
+        }
+
+        public bool CheckIntersection(IMovable mob1, IMovable mob2)
+        {
+            var x1 = 0d;
+            var y1 = 0d;
+            GetXY(mob1, ref x1, ref y1);
+
+            var x2 = 0d;
+            var y2 = 0d;
+            GetXY(mob2, ref x2, ref y2);
+            return CheckSquaresIntersect(x1, y1, x2, y2);
+        }
+
+        private bool CheckSquaresIntersect(double x1, double y1, double x2, double y2)
+        {
+            if (x2 < x1)
+                return CheckSquaresIntersect(x2, y2, x1, y1);
+            var eps = 0.03;
+            return (x1 + 1 > x2 + eps && y1 + eps < y2 + 1 && y1 + 1 > y2 + eps);
+        }
+
+        public void GetXY(IMovable mob, ref double x, ref double y)
+        {
+            x = mob.X + mob.DX;
+            y = mob.Y + mob.DY;
+        }
+    }
 
 	public static class TwoDimensionalExtension
 	{

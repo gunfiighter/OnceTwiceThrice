@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Windows.Forms;
 
 namespace OnceTwiceThrice
@@ -57,6 +53,14 @@ namespace OnceTwiceThrice
         {
             startTime = Model.TickCount - 100;
             onTick();
+        }
+
+        public override void ForMoveStart()
+        {
+            var willDie = Model.Map[MX, MY].Mobs.ToArray();
+            for (var i = 0; i < willDie.Length; i++)
+                willDie[i].Destroy();
+            base.ForMoveStart();
         }
 
         private bool checkThree(int x, int y, Keys direction)

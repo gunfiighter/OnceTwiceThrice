@@ -12,9 +12,8 @@ namespace OnceTwiceThrice
         {
             Action IceToWater = () =>
             {
-                var back = Model.Map[X, Y].Back;
-                if (back is IceBackground)
-                    back = new WaterBackground(Model, X, Y);
+                if (Model.Map[X, Y].Back is IceBackground)
+                    Model.Map[X, Y].Back = new WaterBackground(Model, X, Y);
             };
             OnMoveStart += () =>
             {

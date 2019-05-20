@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnceTwiceThrice.Other
+namespace OnceTwiceThrice
 {
     public class MyList<T> : IEnumerable<T>
     {

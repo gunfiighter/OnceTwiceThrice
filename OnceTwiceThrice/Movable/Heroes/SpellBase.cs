@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace OnceTwiceThrice
@@ -92,7 +89,7 @@ namespace OnceTwiceThrice
 				Hero.UnlockKeyMap();
 				Hero.UpdateImage();
 			}
-			if (Model.TickCount - StartTime > Interval)
+			if (Model.TickCount - StartTime >= Interval)
             {
                 Destroy();
 				

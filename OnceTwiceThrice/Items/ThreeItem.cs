@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-
+﻿
 namespace OnceTwiceThrice
 {
     public class ThreeItem : ItemBase, IItem

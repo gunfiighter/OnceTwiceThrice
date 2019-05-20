@@ -1,58 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace OnceTwiceThrice
 {
-	public class Animation
-	{
-		public bool IsMoving { get; set; }
-		public Keys Direction { get; set; }
-		public Animation()
-		{
-			IsMoving = false;
-			Direction = Keys.None;
-		}
-	}
-
-	public interface IMovable
-	{
-        GameModel Model { get; }
-		Image Image { get; set; }
-		KeyMap KeyMap { get; set; }
-		void MakeMove(Keys key);
-		void MakeAnimation();
-		void Destroy();
-		int X { get; }
-		int Y { get; }
-		int MX { get; }
-		int MY { get; }
-		double DX { get; }
-		double DY { get; }
-
-        event Action OnMoveStart;
-        bool DestroyByMatthiusSpell { get; }
-        bool DestroyBySkimletSpell { get; }
-        Animation CurrentAnimation { get; }
-        Keys GazeDirection { get; set; }
-        void LockKeyMap();
-        void UnlockKeyMap();
-		void UpdateImage();
-        bool NeedInvalidate { get; set; }
-        void GoTo(Keys direction);
-        bool IceSlip { get; }
-        bool AllowToMove(Keys key);
-        bool CanKill(IMob mob);
-        IHero iHero { get; }
-        IMob iMob { get; }
-    }
-
 	public class MovableBase : IMovable
 	{
         private Image _image;
@@ -244,20 +197,7 @@ namespace OnceTwiceThrice
 			DX += newX * Speed;
 			DY += newY * Speed;
 
-			if (this is DinoMob)
-			{
-				;
-			}
-
-            foreach (var mob in Model.Mobs)
-            {
-				if (mob is SkimletHero)
-				{
-					;
-				}
-                if (mob != this)
-                    Conflict(this, mob);
-            }
+            CheckAllIntersection();
 
 			if (Model.TickCount % SlideLatency == 0)
 				AnimatedMove();
@@ -275,65 +215,18 @@ namespace OnceTwiceThrice
 			}
 		}
 
-        private void Conflict(IMovable mob1, IMovable mob2)
+        public void CheckAllIntersection()
         {
-            if (CheckIntersection(mob1, mob2))
+            foreach (var mob in Model.Mobs)
             {
-                if (mob1.iHero != null)
-                {
-                    mob1.Destroy();
-                    return;
-                }
-                if (mob2.iHero != null)
-                {
-                    mob2.Destroy();
-                    return;
-                }
-                if (mob1.CanKill(mob2 as IMob))
-                {
-                    mob2.Destroy();
-                    return;
-                }
-                if (mob2.CanKill(mob1 as IMob))
-                {
-                    mob1.Destroy();
-                    return;
-                }
+                if (mob != this)
+                    Model.Conflict(this, mob);
             }
-        }
-
-        private bool CheckIntersection(IMovable mob1, IMovable mob2)
-        {
-            var x1 = 0d;
-            var y1 = 0d;
-            GetXY(mob1, ref x1, ref y1);
-            
-            var x2 = 0d;
-            var y2 = 0d;
-            GetXY(mob2, ref x2, ref y2);
-            return func(x1, y1, x2, y2);
-        }
-
-        public bool func(double x1, double y1, double x2, double y2)
-        {
-            if (x2 < x1)
-                return func(x2, y2, x1, y1);
-            //if (x1 + 1 <= x2 || y1 >= y2 + 1 || y1 + 1 <= y2)
-            //    return false;
-            var eps = 0.03;
-            if (x1 + 1 > x2 + eps && y1 + eps < y2 + 1 && y1 + 1 > y2 + eps)
+            foreach (var hero in Model.Heroes)
             {
-                ;
+                if (hero != this)
+                    Model.Conflict(this, hero);
             }
-            return (x1 + 1 > x2 + eps && y1 + eps < y2 + 1 && y1 + 1 > y2 + eps);
-
-            //return true;
-        }
-
-        public void GetXY(IMovable mob, ref double x, ref double y)
-        {
-            x = mob.X + mob.DX;
-            y = mob.Y + mob.DY;
         }
 
         public void AnimatedMove()

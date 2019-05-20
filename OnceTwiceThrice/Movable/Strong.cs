@@ -36,10 +36,9 @@ namespace OnceTwiceThrice
                 Tuple.Create(typeof(HotGuyMob), typeof(PenguinMob)),
                 Tuple.Create(typeof(HotGuyMob), typeof(MonkeyMob)),
                 Tuple.Create(typeof(HotGuyMob), typeof(HotGuyMob)),
-				Tuple.Create(typeof(HotGuyMob), typeof(TermiteMob)),
-				Tuple.Create(typeof(HotGuyMob), typeof(CactusMob)),
+                Tuple.Create(typeof(HotGuyMob), typeof(TermiteMob)),
 
-				Tuple.Create(typeof(SharkMob), typeof(PenguinMob)),
+                Tuple.Create(typeof(SharkMob), typeof(PenguinMob)),
 
                 Tuple.Create(typeof(TermiteMob), typeof(MonkeyMob)),
                 Tuple.Create(typeof(TermiteMob), typeof(BlueGolemMob)),

@@ -1,5 +1,4 @@
 using System;
-using System.Windows.Forms;
 
 namespace OnceTwiceThrice
 {
@@ -25,10 +24,13 @@ namespace OnceTwiceThrice
 
 		public void CreateSpell(Func<int, int, ISpell> spell)
         {
+            if (!KeyMap.Enable)
+                return;
             var newX = 0;
             var newY = 0;
             Useful.XyPlusKeys(X, Y, this.GazeDirection, ref newX, ref newY);
-            Model.Spells.Add(spell(newX, newY));
+            if (Model.IsInsideMap(newX, newY))
+                Model.Spells.Add(spell(newX, newY));
         }
 
 		public virtual void MoveStart()

@@ -10,6 +10,8 @@ namespace OnceTwiceThrice
 
 		public DinoMob(GameModel model, int x, int y) : base(model, ImagePath, x, y)
 		{
+			OnMoveStart += base.ForMoveStart;
+
             model.OnMobMapChange += ForMobMapChange;
 
             OnDestroy += () =>
@@ -80,6 +82,15 @@ namespace OnceTwiceThrice
         }
 
 		public override void ForStop() { }
+        public override void ForMoveStart()
+        {
+            var newX = X;
+            var newY = Y;
+            Useful.XyPlusKeys(newX, newY, GazeDirection, ref newX, ref newY);
+            var willDie = Model.Map[newX, newY].Mobs.Where(mob => mob != this && !(mob is SporeMob)).ToArray();
+            for (var i = 0; i < willDie.Length; i++)
+                willDie[i].Destroy();
+        }
         public override bool CanStep(IItem item)
         {
             if (item is ThreeItem)
