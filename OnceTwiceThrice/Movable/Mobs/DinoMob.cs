@@ -19,28 +19,27 @@ namespace OnceTwiceThrice
                 model.OnMobMapChange -= ForMobMapChange;
             };
 
+            Func<Keys, bool> CheckAndMove = (key) =>
+            {
+                if (checkDirection(key))
+                {
+                    GazeDirection = key;
+                    if (AllowToMove(key))
+                    {
+                        GoTo(key);
+                        return true;
+                    }
+                }
+                return false;
+            };
+
 			OnStop += () =>
 			{
-				if (checkDirection(Keys.Up))
-				{
-					GoTo(Keys.Up);
-					return;
-				}
-				if (checkDirection(Keys.Down))
-				{
-					GoTo(Keys.Down);
-					return;
-				}
-				if (checkDirection(Keys.Right))
-				{
-					GoTo(Keys.Right);
-					return;
-				}
-				if (checkDirection(Keys.Left))
-				{
-					GoTo(Keys.Left);
-					return;
-				}
+                if (CheckAndMove(Keys.Up) ||
+                    CheckAndMove(Keys.Right) ||
+                    CheckAndMove(Keys.Down) ||
+                    CheckAndMove(Keys.Left))
+                    return;
 			};
 		}
 
