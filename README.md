@@ -1,2 +1,0 @@
-# OnceTwiceThrice
-OnceTwiceThrice uLearn

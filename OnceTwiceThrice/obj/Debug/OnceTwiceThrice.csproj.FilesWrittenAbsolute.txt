@@ -1,7 +1,0 @@
-/home/kiromekexity/Загрузки/OnceTwiceThrice-master/OnceTwiceThrice/obj/Debug/.NETFramework,Version=v4.6.1.AssemblyAttribute.cs
-/home/kiromekexity/Загрузки/OnceTwiceThrice-master/OnceTwiceThrice/obj/Debug/OnceTwiceThrice.Properties.Resources.resources
-/home/kiromekexity/Загрузки/OnceTwiceThrice-master/OnceTwiceThrice/bin/Debug/OnceTwiceThrice.exe.config
-/home/kiromekexity/Загрузки/OnceTwiceThrice-master/OnceTwiceThrice/bin/Debug/OnceTwiceThrice.pdb
-/home/kiromekexity/Загрузки/OnceTwiceThrice-master/OnceTwiceThrice/bin/Debug/OnceTwiceThrice.exe
-/home/kiromekexity/Загрузки/OnceTwiceThrice-master/OnceTwiceThrice/obj/Debug/OnceTwiceThrice.exe
-/home/kiromekexity/Загрузки/OnceTwiceThrice-master/OnceTwiceThrice/obj/Debug/OnceTwiceThrice.pdb

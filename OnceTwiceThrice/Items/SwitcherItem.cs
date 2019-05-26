@@ -46,7 +46,7 @@ namespace OnceTwiceThrice
 
         public override void onTick()
         {
-            if ((Model.TickCount - startTime) % 10 == 0)
+            if ((Model.TickCount - startTime) % 50 == 0)
                 TurnOff();
         }
 
